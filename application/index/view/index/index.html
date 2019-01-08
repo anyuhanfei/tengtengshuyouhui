@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+
+<body>
+
+<header class="head">
+<div class="head-top shadow">
+  <div class="head-flex flex-between">
+    <a class="head-ipt" href="{:url('index/search')}">
+      <img class="head-img" src="/static/index/img/icon-search.png" width="18" height="18" />
+      <input class="head-txt" type="text" placeholder="请输入书名" disabled />
+    </a>
+    <div class="head-center align-center">
+      <a href="{:url('index/index',['sex'=>0])}" class="head-kind {if condition='$sex == 0'}active{/if}">男生</a>
+      <a href="#">|</a>
+      <a href="{:url('index/index',['sex'=>1])}" class="head-kind {if condition='$sex == 1'}active{/if}">女生</a>
+    </div>
+  </div>
+</div>
+<!--最近阅读（有阅读记录时才会显示）-->
+{if condition="$reading"}
+<div class="head-new p15">
+  <a href="{:url('index/novel_content',['novel_id'=>$reading.novel.novel_id,'chapter_id'=>$reading.novel_chapter.chapter_id])}" class="ablock text-ellipsis">
+    最近阅读：<span>{$reading.novel.novel_name}</span>
+    <span>{$reading.novel_chapter.title}</span>
+  </a>
+</div>
+{/if}
+
+<!-- swiper轮播图 -->
+<div class="head-banner">
+  <div class="swiper-container">
+    <div class="swiper-wrapper">
+      {volist name="banner" id="a"}
+      <div class="swiper-slide head-radius {if condition='$i == 1'} swiper-slide-active {/if}"><img src="{$a.image}" alt=""></div>
+       {/volist}
+    </div>
+    <!-- 如果需要分页器 -->
+    <div class="swiper-pagination"></div>
+  </div>
+</div>
+
+<div class="head-clas align-center clearfix">
+  <a class="head-box" href="{:url('index/top')}">
+    <img src="/static/index/img/icon-rank.png" class="head-icon" width="50" height="50" alt="" />
+    <p class="head-title">排行榜</p>
+  </a>
+  <a class="head-box" href="{:url('index/stack')}">
+    <img src="/static/index/img/icon-kind.png" class="head-icon" width="50" height="50" alt="" />
+    <p class="head-title">书库</p>
+  </a>
+  <a class="head-box" href="{:url('user/charge')}">
+    <img src="/static/index/img/icon-charge.png" class="head-icon" width="50" height="50" alt="" />
+    <p class="head-title">充值</p>
+  </a>
+  <a class="head-box" href="{:url('user/center')}">
+    <img src="/static/index/img/icon-person.png" class="head-icon" width="50" height="50" alt="" />
+    <p class="head-title">个人中心</p>
+  </a>
+</div>
+
+</header>
+
+{if condition="$hot"}
+<div class="new">
+  <div class="title">
+    <h3>热门推荐</h3>
+    <a href="{:url('index/recommend',['type'=>1])}" class="more">更多</a>
+  </div>
+  <ul class="new-list">
+    {volist name="hot" id="h"}
+    <li class="new-item">
+      <a href="{:url('index/novel_detail',array('novel_id'=>$h.novel_id))}">
+        <div class="new-box">
+          <div class="new-unit">
+            <div class="new-cell text-ellipsis">
+              <span class="new-kind">{$h.novel_classify.nc_name}</span>
+              <span class="new-male {if condition='$h.novel_status==2'}active{/if}">{$h.novel_status_text} |</span>
+              <span class="new-title">{$h.novel_name}</span>
+            </div>
+          </div>
+          <p class="new-score">{$h.novel_count.number_of_reward_human}人已打赏</p>
+        </div>
+        <p class="new-cont text-ellipsis">
+          {$h.novel_profile|substr=###,0,81}...
+        </p>
+      </a>
+    </li>
+    {/volist}
+  </ul>
+</div>
+{/if}
+{if condition="$eic"}
+<div class="new">
+  <div class="title">
+    <h3>主编推荐</h3>
+    <a href="{:url('index/recommend',['type'=>2])}" class="more">更多</a>
+  </div>
+  {volist name="eic" id="e"} {if condition="$i == 1"}
+  <a href="{:url('index/novel_detail',array('novel_id'=>$e.novel_id))}" class="ablock">
+    <div class="new-special new-list">
+      <div class="new-pic">
+        <img src="{$e.novel_image}" width="92" height="122" />
+      </div>
+      <div class="new-info new-unit">
+        <div class="new-top flex-between">
+          <div class="new-unit text-ellipsis">{$e.novel_name}</div>
+          <div class="new-score">{$e.novel_count.number_of_reward_human}人已打赏</div>
+        </div>
+        <p class="new-content">
+          {$e.novel_profile|substr=###,0,81}...
+        </p>
+        <div class="new-cell new-mrt">
+          <span class="new-kind">{$e.novel_classify.nc_name}</span>
+          <span class="new-male {if condition='$e.novel_status==2'}active{/if}">{$e.novel_status_text} |</span>
+        </div>
+      </div>
+    </div>
+  </a>
+  {else /}
+  <ul class="new-list">
+    <li class="new-item">
+      <a href="{:url('index/novel_detail',array('novel_id'=>$e.novel_id))}">
+        <div class="new-box flex-between">
+          <div class="new-unit">
+            <div class="new-cell text-ellipsis clearfix">
+              <span class="new-kind">{$e.novel_classify.nc_name}</span>
+              <span class="new-male {if condition='$e.novel_status==2'}active{/if}">{$e.novel_status_text} |</span>
+              <span class="new-title">{$e.novel_name}</span>
+            </div>
+          </div>
+          <p class="new-score">{$e.novel_count.number_of_reward_human}人已打赏</p>
+        </div>
+        <p class="new-cont text-ellipsis">
+          {$e.novel_profile|substr=###,0,81}...
+        </p>
+      </a>
+    </li>
+    {/if} {/volist}
+  </ul>
+</div>
+{/if}
+{if condition="$vip"}
+<div class="new">
+  <div class="title">
+    <h3>VIP推荐</h3>
+  </div>
+  {volist name="vip" id="v"}
+  <a href="{:url('index/novel_detail',array('novel_id'=>$v.novel_id))}" class="ablock">
+    <div class="new-special new-list">
+      <div class="new-pic">
+        <img src="{$v.novel_image}" width="92" height="122" />
+      </div>
+      <div class="new-info new-unit">
+        <div class="new-top flex-between">
+          <div class="new-unit text-ellipsis">{$v.novel_name}</div>
+          <div class="new-score">{$v.novel_count.number_of_reward_human}人已打赏</div>
+        </div>
+        <p class="new-content">
+          {$v.novel_profile|substr=###,0,81}...
+        </p>
+        <div class="new-cell new-mrt">
+          <span class="new-kind">{$v.novel_classify.nc_name}</span>
+          <span class="new-male {if condition='$v.novel_status==2'}active{/if}">{$v.novel_status_text} |</span>
+        </div>
+      </div>
+    </div>
+  </a>
+  {/volist}
+</div>
+{/if}
+{if condition="$free_of_charge"}
+<div class="new">
+  <div class="title">
+    <h3>免费</h3>
+    <!--<div class="times" id="times">
+      <span class="days">0</span>天<span class="hours">00</span>时<span class="minutes">00</span>分<span class="seconds">00</span>秒
+    </div>-->
+  </div>
+  {volist name="free_of_charge" id="c"}
+  <a href="{:url('index/novel_detail',array('novel_id'=>$c.novel_id))}" class="ablock">
+    <div class="new-special new-list">
+      <div class="new-pic">
+        <img src="{$c.novel_image}" width="92" height="122" />
+      </div>
+      <div class="new-info new-unit">
+        <div class="new-top flex-between">
+          <div class="new-unit text-ellipsis">{$c.novel_name}</div>
+          <div class="new-score">{$c.novel_count.number_of_reward_human}人已打赏</div>
+        </div>
+        <p class="new-content">
+          {$c.novel_profile|substr=###,0,81}...
+        </p>
+        <div class="new-cell new-mrt">
+          <span class="new-kind">{$c.novel_classify.nc_name}</span>
+          <span class="new-male {if condition='$c.novel_status==2'}active{/if}">{$c.novel_status_text} |</span>
+        </div>
+      </div>
+    </div>
+  </a>
+  {/volist}
+</div>
+{/if}
+
+<footer class="foot">
+  <div class="foot-box flex-between">
+    <div class="foot-left">
+      <p>客服热线：{$sys.phone}</p>
+      <p>客服QQ：{$sys.qq}</p>
+      <p>{$sys.work_time}</p>
+    </div>
+    <div class="foot-ewm">
+      <img src="{$sys.qrcode}" width="120" height="120" />
+    </div>
+  </div>
+  <div class="foot-copy align-center dec_line">
+    技术支持：
+    <a href="http://www.dd371.com/">朵朵科技</a>
+  </div>
+</footer>
+
+<div class="back-top" id="goToTop">
+  <a href="javascript:;"></a>
+</div>
+
+<script type="text/javascript">
+$(function() {
+  var mySwiper = new Swiper ('.swiper-container', {
+    loop: true, //是否开启循环模式选项
+    effect: 'slide',//'fade','cube','coverflow','flip'
+    autoplay: {
+      delay: 3000,//设置自动播放时间
+    },
+    
+    // 如果需要分页器
+    pagination: {
+      el: '.swiper-pagination',
+    },
+    
+  })  
+  
+  countDown("2019/01/01 14:12:00", "#times .days", "#times .hours", "#times .minutes", "#times .seconds");
+
+  var sex = "{$sex}";
+  $.ajax({
+    'url': '{:url("index/sex")}',
+    'type': 'post',
+    'data': {
+      sex: sex
+    },
+  })
+});
+
+function countDown(time, day_elem, hour_elem, minute_elem, second_elem) {
+  //if(typeof end_time == "string")
+  var end_time = new Date(time).getTime(), //月份是实际月份-1
+    //current_time = new Date().getTime(),
+    sys_second = (end_time - new Date().getTime()) / 1000;
+  var timer = setInterval(function() {
+    if(sys_second > 1) {
+      sys_second -= 1;
+      var day = Math.floor((sys_second / 3600) / 24);
+      var hour = Math.floor((sys_second / 3600) % 24);
+      var minute = Math.floor((sys_second / 60) % 60);
+      var second = Math.floor(sys_second % 60);
+      day_elem && $(day_elem).text(day); //计算天
+      $(hour_elem).text(hour < 10 ? "0" + hour : hour); //计算小时
+      $(minute_elem).text(minute < 10 ? "0" + minute : minute); //计算分
+      $(second_elem).text(second < 10 ? "0" + second : second); // 计算秒
+    } else {
+      clearInterval(timer);
+    }
+  }, 1000);
+}
+</script>
+
+</body>
+
+</html>

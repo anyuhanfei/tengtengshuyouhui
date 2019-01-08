@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+<body>
+{include file="public/nav"}
+
+<div class="top align-center">
+  <div class="top-txt">
+    客服中心
+  </div>
+  <a href="javascript:history.back(-1)" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14" height="14" /></a>
+    {include file="public/top_nav"}
+</div>
+
+<div class="kefu">
+	<p class="bd-btm">客服微信：{$sys.service_wx}</p>
+	<p class="bd-btm">客服QQ：{$sys.qq}</p>
+	<p class="bd-btm">客服电话：{$sys.phone}</p>
+	<p class="bd-btm">工作时间：{$sys.work_time}</p>
+</div>
+
+</body>
+
+</html>

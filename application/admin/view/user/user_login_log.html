@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+{include file="public:header"}
+
+<body class="no-skin">
+  <!--头部-->
+  {include file="public:nav"}
+
+  <div class="main-container ace-save-state" id="main-container">
+    <!--菜单-->
+    <script type="text/javascript">
+      try { ace.settings.loadState('main-container') } catch (e) { }
+    </script>
+
+    {include file="public:left"}
+
+    <div class="main-content">
+      <div class="main-content-inner">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+          <ul class="breadcrumb">
+            <li>
+              <i class="ace-icon fa fa-home home-icon"></i>
+              <a href="{:url('Index/index')}">首页</a>
+            </li>
+            <li class="active">会员管理</li>
+            <li class="active">会员列表</li>
+            <li class="active">登录记录</li>
+          </ul><!-- /.breadcrumb -->
+
+        </div>
+
+        <div class="page-content">
+          {include file="public:set"}
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="col-sm-10 col-sm-offset-1">
+                <div class="page-header">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <a class="btn btn-success btn-white btn-bold" href="###">
+                        {$user.user_name}</a>
+                        <span>注：记录从微信公众号中进入书城的登录操作和登录效果消失重新登录的情况</span>
+                      <!-- <button class="btn btn-danger btn-white btn-bold del-btn">
+                  <i class="ace-icon fa fa-trash-o icon-only"></i>
+                  删除
+                </button> -->
+                    </div>
+
+                    <div class="col-sm-8 clearfix">
+                  
+                </div>
+                  </div>
+                </div>
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th class="center">
+                        <label class="pos-rel">
+                          <input type="checkbox" class="ace checkAll">
+                          <span class="lbl"></span>
+                        </label>
+                      </th>
+                      <th>id</th>
+                      <th>登录时间</th>
+                    </tr>
+                  </thead>
+                  <form id="sortForm" action="" method="post">
+                    <tbody>
+                      {volist name="list" id="v"}
+                      <tr class="ace-thumbnails">
+                        <td class="center"><label class="pos-rel">
+                            <input type="checkbox" class="ace check" value="{$v.ll_id}">
+                            <span class="lbl"></span>
+                          </label>
+                        </td>
+                        <td>{$v.ll_id}</td>
+                        <td>{$v.login_time}</td>
+                      </tr>
+                      {/volist}
+                      {empty name="list"}<tr>
+                        <td colspan="15" class="text-center">暂无数据</td>
+                      </tr>{/empty}
+                    </tbody>
+                  </form>
+                </table>
+                <div class="text-center">
+                  {$list->render()}
+                </div>
+              </div>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.page-content -->
+      </div>
+    </div><!-- /.main-content -->
+
+    <div class="footer">
+      <div class="footer-inner">
+        <div class="footer-content">
+          <span class="bigger-110">
+            <span class="blue bolder">Ace</span>
+            朵朵科技CMS &copy; 2018-2020
+          </span>
+
+          &nbsp; &nbsp;
+          <a href="http://www.dd371.com" target="_blank">技术支持: 朵朵科技</a>
+        </div>
+      </div>
+    </div>
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+      <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+  </div><!-- /.main-container -->
+
+  
+
+
+  <script>
+    jQuery(function ($) {
+      $('[data-rel=tooltip]').tooltip();
+
+      $("#hide-option").tooltip({
+        hide: {
+          effect: "explode",
+          delay: 250
+        }
+      });
+
+    })
+  </script>
+</body>
+
+</html>

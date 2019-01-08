@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+<body>
+{include file="public/nav"}
+
+<div class="top align-center">
+  <div class="top-txt">
+    绑定手机号
+  </div>
+  <a href="{:url('user/center')}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14" height="14" /></a>
+
+    {include file="public/top_nav"}
+</div>
+<!--未绑定时显示此页面-->
+<div class="form">
+    <div class="bangding p15">
+      <div class="bangding-cell p15 flex">
+        <i class="iconfont icon-bangdingshoujihao"></i>
+        <div class="bangding-box">
+          <input class="bangding-ipt" id="phone" type="number" name="user_phone" size="11" placeholder="请输入手机号" required />
+        </div>
+      </div>
+      <div class="bangding-cell p15 flex dec_line">
+        <i class="iconfont icon-yanzheng"></i>
+        <div class="bangding-box">
+          <input class="bangding-ipt" id="yanzhengma" size="6" type="number" name="code" placeholder="请输入验证码" required />
+        </div>
+        <input type="text" id="attrYan" class="bangding-btn" onclick="sendemail()" value="获取验证码" readonly>
+      </div>
+    </div>
+    <div class="p15">
+    	<button type="submit" class="charge-btn" onclick="submit_phone()">提交</button>
+    </div>
+</div>
+
+<!--提交成功之后显示的弹窗-->
+<style type="text/css">
+	.charge-sucess {
+	  display: none;
+	}
+</style>
+<div class="charge-sucess align-center">
+	<div class="sucess-icon">
+		<img src="/static/index/img/icon-gold.png" width="120" height="120" />
+	</div>
+	<p>恭喜您绑定成功！获得<span class="center-num">50</span>钻石</p>
+	<button type="button" class="charge-confirm">确定</button>
+</div>
+
+<!--若已绑定手机号则显示这个页面-->
+<style type="text/css">
+	.hasbang {
+	  display: none;
+	}
+</style>
+<div class="hasbang align-center">
+	<div class="sucess-icon">
+		<img src="/static/index/img/icon-yibangding.png" width="120" height="120" />
+	</div>
+	<p class="hasbang-txt nine-col">已绑定手机</p>
+	<p class="hasbang-txt" id="user_phone">{$user.user_phone}</p>
+	<a href="{:url('user/phone',['type'=>1])}" class="hasbang-btn">更换手机号</a>
+</div>
+<div id="type_" style="display:none;">{$type}</div>
+
+
+<script type="text/javascript">
+var countdown = 60;
+
+var phone = $("#user_phone").html();
+var type = $("#type_").html();
+if(phone == '' || type == 1){
+  //没有绑定手机号或更换手机号
+  $('.form').show();
+  $('.hasbang').hide();
+}else{
+  //已绑定手机号
+  $('.form').hide();
+  $('.hasbang').show();
+}
+
+function sendemail() {
+  var obj = $("#attrYan");
+  settime(obj);
+  var phone = $("#phone").val();
+  $.ajax({
+    url: "{:url('User/send_code')}",
+    type: 'post',
+    data: {phone: phone},
+    success:function(data){
+      if(data.error_code == -1){
+        layer.msg(data.msg);
+      }
+    }
+  })
+}
+
+function settime(obj) { //发送验证码倒计时
+  if(countdown == 0) {
+    obj.attr('disabled', false);
+    //obj.removeattr("disabled"); 
+    obj.val("获取验证码");
+    countdown = 60;
+    return;
+  } else {
+    obj.attr('disabled', true);
+    obj.val("重新发送(" + countdown + ")");
+    countdown--;
+  }
+  setTimeout(function() {
+    settime(obj)
+  }, 1000)
+}
+
+$('.charge-confirm').click(function(){
+  $('.charge-sucess').hide();
+  $('.hasbang').show();
+})
+
+
+function submit_phone() {
+    var user_phone = $("#phone").val();
+    var code = $("#yanzhengma").val();
+    if(user_phone == ''){
+        layer.msg('请输入手机号', {icon: 2});
+        return;
+    }
+    if(code == ''){
+        layer.msg('请输入短信验证码', {icon: 2});
+        return;
+    }
+    var myreg=/^[1][3,4,5,6,7,8][0-9]{9}$/;
+    if (!myreg.test(user_phone)) {
+        layer.msg('输入的手机号不符合规则!', {icon: 2});
+        return;
+    }
+    $.ajax({
+        url: '{:url("user/phone_submit")}',
+        type: 'post',
+        data: {user_phone: user_phone, code: code},
+        success: function(data){
+            if(data.error_code == 1){
+              //第一次绑定
+              $('.charge-sucess').show();
+              $('.form').hide();
+            }else if(data.error_code == 2){
+              //更换手机号
+              $('.form').show();
+              $('.hasbang').hide();
+            }else if(data.error_code == -1){
+              //绑定失败
+              layer.msg(data.msg);
+            }
+        }
+    })
+}
+</script>
+
+</body>
+
+</html>

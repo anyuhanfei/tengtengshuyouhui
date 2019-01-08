@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+{include file="public:header"}
+
+<body class="no-skin">
+  <!--头部-->
+  {include file="public:nav"}
+
+  <div class="main-container ace-save-state" id="main-container">
+    <!--菜单-->
+    <script type="text/javascript">
+      try { ace.settings.loadState('main-container') } catch (e) { }
+    </script>
+
+    {include file="public:left"}
+
+    <div class="main-content">
+      <div class="main-content-inner">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+          <ul class="breadcrumb">
+            <li>
+              <i class="ace-icon fa fa-home home-icon"></i>
+              <a href="{:url('Index/index')}">首页</a>
+            </li>
+            <li class="active">书籍管理</li>
+            <li class="active">书籍列表</li>
+          </ul><!-- /.breadcrumb -->
+
+        </div>
+
+        <div class="page-content">
+          {include file="public:set"}
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="col-sm-10 col-sm-offset-1">
+                <div class="page-header">
+                  <div class="row">
+                    <div class="col-sm-2">
+                      <a class="btn btn-success btn-white btn-bold" href="{:url('novel/novel_add')}">
+                        <i class="ace-icon fa fa-plus icon-only"></i>
+                        添加</a>
+                      <!-- <button class="btn btn-danger btn-white btn-bold del-btn">
+                  <i class="ace-icon fa fa-trash-o icon-only"></i>
+                  删除
+                </button> -->
+                    </div>
+
+                    <div class="col-sm-8 clearfix">
+                  <form class="form-inline pull-right" action="" method="post">
+                      <div class="input-group">
+                          <span class="input-group-addon">
+                            <i class="fa fa-th-list"></i>
+                          </span>
+                        <select class="form-control" name="nc_id" id="">
+                          <option selected value="-1">分类</option>
+                          {volist name="nc" id="n"}
+                          <option value="{$n.nc_id}" {if condition="$search.nc_id eq $n.nc_id"} selected {/if}>{$n.nc_name}</option>
+                          {/volist}
+                        </select>
+                      </div>
+                    <div class="form-group">
+                      <div class="input-group">
+									<span class="input-group-addon">
+											<i class="fa fa-th-list"></i>
+										</span>
+                        <select class="form-control" name="status" id="">
+                          <option selected value="-1">状态</option>
+                          <option value="1" {if condition="$search.novel_status eq 1"} selected {/if}>连载中</option>
+                          <option value="2" {if condition="$search.novel_status eq 2"} selected {/if}>已完结</option>
+                        </select>
+                      </div>
+                      <div class="input-group">
+                      <select class="form-control" name="recommend" id="">
+                        <option selected value="-1">推荐</option>
+                        <option value="1" {if condition="$search.novel_recommend eq 1"} selected {/if}>热门推荐</option>
+                        <option value="2" {if condition="$search.novel_recommend eq 2"} selected {/if}>主编推荐</option>
+                        <option value="3" {if condition="$search.novel_recommend eq 3"} selected {/if}>vip推荐</option>
+                        <option value="4" {if condition="$search.novel_recommend eq 4"} selected {/if}>精彩推荐</option>
+                      </select>
+                    </div>
+                    <div class="input-group">
+                            <select class="form-control" name="free_of_charge" id="">
+                              <option selected value="-1">限免</option>
+                              <option value="0" {if condition="$search.free_of_charge eq 0"} selected {/if}>收费</option>
+                              <option value="1" {if condition="$search.free_of_charge eq 1"} selected {/if}>免费</option>
+                            </select>
+                          </div>
+                    <div class="input-group">
+                            <select class="form-control" name="sex" id="">
+                              <option selected value="-1">性别</option>
+                              <option value="0" {if condition="$search.novel_sex eq 0"} selected {/if}>男</option>
+                              <option value="1" {if condition="$search.novel_sex eq 1"} selected {/if}>女</option>
+                            </select>
+                          </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="input-group">
+									<span class="input-group-addon">
+										<i class="ace-icon fa fa-check"></i>
+									</span>
+                        <input type="text" name="novel_name" id="key" class="form-control search-query" value="{$search.novel_name}" placeholder="请输入需查询的书名">
+                        <span class="input-group-btn">
+										<button type="submit" class="btn btn-info btn-sm ajax-search-form">
+											<span class="ace-icon fa fa-search icon-on-right bigger-120"></span> 搜索
+									</button>
+									</span>
+                      </div>
+                    </div>
+                    <a href="" class="btn btn-info btn-sm ajax-search-form">
+                      刷新
+                 </a>
+                  </form>
+                  
+                </div>
+                  </div>
+                </div>
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th class="center">
+                        <label class="pos-rel">
+                          <input type="checkbox" class="ace checkAll">
+                          <span class="lbl"></span>
+                        </label>
+                      </th>
+                      <th>ID</th>
+                      <th>书名</th>
+                      <th>分类</th>
+                      <th class="hidden-480">封面</th>
+                      <!-- <th class="hidden-480" style="width:25%;">简介</th> -->
+                      <th class="hidden-480">性别</th>
+                      <th class="hidden-480">阅读量</th>
+                      <th class="hidden-480">点赞量</th>
+                      <th class="hidden-480">打赏数量</th>
+                      <th class="hidden-480">打赏人数</th>
+                      <th class="hidden-480">章节数</th>
+                      <th class="hidden-480">字数</th>
+                      <th class="hidden-480">发布时间</th>
+                      <th>状态</th>
+                      <th>推荐</th>
+                      <th>限免</th>
+                      <th style="border-right:#ddd solid 1px;">操作</th>
+                    </tr>
+                  </thead>
+                  <form id="sortForm" action="__URL__/sort" method="post">
+                    <tbody>
+                      {volist name="list" id="v"}
+                      <tr class="ace-thumbnails" id="tr{$v.novel_id}">
+                        <td class="center"><label class="pos-rel">
+                            <input type="checkbox" class="ace check" value="{$v.novel_id}">
+                            <span class="lbl"></span>
+                          </label>
+                        </td>
+                        <td><span class="badge badge-grey">{$v.novel_id}</span></td>
+                        <td>{$v.novel_name}</td>
+                        <td>{$v.novel_classify.nc_name}</td>
+                        <td class="ace-thumbnails hidden-480">
+                          <li><a href="{$v.novel_image}" data-rel="colorbox">
+                              <img width="60" height="80" alt="150x150" src="{$v.novel_image}" />
+                              <div class="text">
+                                <div class="inner">点击放大</div>
+                              </div>
+                            </a></li>
+                        </td>
+                        <td class="hidden-480">{$v.novel_sex_text}</td>
+                        <td class="hidden-480">{$v.novel_count.reading_volume}</td>
+                        <td class="hidden-480">{$v.novel_count.number_of_likes}</td>
+                        <td class="hidden-480">{$v.novel_count.number_of_reward}</td>
+                        <td class="hidden-480">{$v.novel_count.number_of_reward_human}</td>
+                        <td class="hidden-480">{$v.novel_count.number_of_chapters}</td>
+                        <td class="hidden-480">{$v.novel_word_number}万字</td>
+                        <td class="hidden-480">{$v.add_time}</td>
+                        <td class="hidden-480">{$v.novel_status_text}</td>
+                        <td class="hidden-480">{$v.novel_recommend_text}</td>
+                        <td class="hidden-480">{$v.free_of_charge_text}</td>
+                        <td>
+                          <button class="btn btn-xs btn-info" id="lookprofile{$v.novel_id}" onclick="look_profile({$v.novel_id})" 
+                          profile="{$v.novel_profile}" name="{$v.novel_name}" title="简介">
+                           <span class="glyphicon glyphicon-file"></span>
+                          </button>
+                          <a class="btn btn-xs btn-info" href="{:url('novel/novel_chapter_list',array('id'=>$v.novel_id))}" title="章节">
+                            <i class="glyphicon glyphicon-list"></i><!-- 章节 -->
+                          </a>
+                          <a class="btn btn-xs btn-info" href="{:url('novel/novel_update',array('id'=>$v.novel_id))}" title="修改信息">
+                            <i class="ace-icon fa fa-pencil bigger-120"></i><!-- 修改 -->
+                          </a>
+                          <a class="btn btn-xs btn-info" href="{:url('novel/novel_count_update',array('id'=>$v.novel_id))}" title="修改统计">
+                            <i class="glyphicon glyphicon-edit"></i><!-- 修改 -->
+                          </a>
+                          <a class="btn btn-xs btn-info" href="{:url('novel/novel_reward',array('id'=>$v.novel_id))}" title="打赏记录">
+                            <i class="glyphicon glyphicon-list-alt"></i><!-- 打赏记录 -->
+                          </a>
+                          <button class="btn btn-xs btn-danger" type="button" onclick="dels({$v.novel_id})" title="删除">
+                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      {/volist}
+                      {empty name="list"}<tr>
+                        <td colspan="15" class="text-center">暂无数据</td>
+                      </tr>{/empty}
+                    </tbody>
+                  </form>
+                  <input type="file" id="other_img" name="other_img" style="display:none">
+                </table>
+                <div class="text-center">
+                  {$list->render()}
+                </div>
+              </div>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.page-content -->
+      </div>
+    </div><!-- /.main-content -->
+
+    <div class="footer">
+      <div class="footer-inner">
+        <div class="footer-content">
+          <span class="bigger-110">
+            <span class="blue bolder">Ace</span>
+            朵朵科技CMS &copy; 2018-2020
+          </span>
+
+          &nbsp; &nbsp;
+          <a href="http://www.dd371.com" target="_blank">技术支持: 朵朵科技</a>
+        </div>
+      </div>
+    </div>
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+      <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+  </div><!-- /.main-container -->
+
+  <div class="modal fade" id="look_profile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">简介模态框</h4>
+            </div>
+            <div class="modal-body">简介内容</div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+
+
+  <script>
+    jQuery(function ($) {
+      $('[data-rel=tooltip]').tooltip();
+
+      $("#hide-option").tooltip({
+        hide: {
+          effect: "explode",
+          delay: 250
+        }
+      });
+
+    })
+  
+    function look_profile(id){
+      event.preventDefault();
+      var lookprofile = $('#lookprofile' + id);
+      var name = lookprofile.attr('name');
+      var profile = lookprofile.attr('profile');
+      $(".modal-title").text(name);
+      $(".modal-body").text(profile);    
+      $('#look_profile').modal('show');
+    }
+
+    function dels(id) {
+      layer.confirm('你确定删除吗？', { icon: 3 }, function (index) {
+        layer.close(index);
+        $.ajax({
+          url: '__URL__/novel_delete',
+          type: 'post',
+          data: { id: id },
+          success: function (data) {
+            layer.msg(data.msg);
+            $('#tr' + id).html('');
+          }
+        })
+      });
+    }
+  </script>
+</body>
+
+</html>

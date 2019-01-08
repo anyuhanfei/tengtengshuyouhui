@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+
+<body>
+    {include file="public/nav"}
+
+    <div class="top align-center">
+        <div class="top-txt">
+            消费记录
+        </div>
+        <a href="javascript:history.back(-1)" class="top-back flex-center"><img src="/static/index/img/icon_back.png"
+                width="14" height="14" /></a>
+                {include file="public/top_nav"}
+    </div>
+
+    <div class="tab">
+        <div class="tab-hd">
+            <ul>
+                <li class="active">消费记录</li>
+                <li>打赏记录</li>
+            </ul>
+        </div>
+        <div class="tab-bd">
+            <ul>
+                <li class="active">
+                    <div class="money" id="recharge">
+                        <!-- <div class="money-item flex-between shadow">
+                            <div class="money-name">
+                                <p class="money-wrap text-ellipsis">
+                                    先婚后爱：总裁别太猛
+                                </p>
+                            </div>
+                            <div class="money-txt">
+                                <div class="money-time nine-col">
+                                    2018-10-29&nbsp;11:39:20
+                                </div>
+                                <p class="money-num">200钻石</p>
+                            </div>
+                        </div> -->
+                    </div>
+                    <p id="recharge_" page="1" onclick="recharge_ajax()">加载更多~</p>
+                </li>
+                <li>
+                    <p class="tab-hide">暂无记录~</p>
+                    <div class="money" id="reward">
+                        <!-- <div class="money-item flex-between shadow">
+                            <div class="money-name">
+                                <p class="money-wrap text-ellipsis">
+                                    鲜花*1
+                                </p>
+                            </div>
+                            <div class="money-txt">
+                                <div class="money-time nine-col">
+                                    2018-10-29&nbsp;11:39:20
+                                </div>
+                                <p class="money-num">99钻石</p>
+                            </div>
+                        </div> -->
+                    </div>
+                    <p id="reward_" page="1" onclick="reward_ajax()">加载更多~</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+
+</html>
+<script type="text/javascript">
+// 加载消费记录
+function recharge_ajax(){
+    var page = $("#recharge_").attr('page');
+    if($("#recharge_").html() == '加载完毕~'){
+        return;
+    }
+    $.ajax({
+        url: '{:url("user/buy_ajax")}',
+        type: 'post',
+        data: {page: page},
+        success: function(data){
+            if (data.error_code == 1) {
+                var str = $("#recharge").html();
+                var data_length = data.data.length;
+                for (i = 0; i < data_length; i++) {
+                    str += '<div class="money-item flex-between shadow">';
+                    str += '<div class="money-name">';
+                    str += '<p class="money-wrap text-ellipsis">' + data.data[i].novel_name + '</p>';
+                    str += '<p class="money-wrap text-ellipsis">' + data.data[i].chapter_title + '</p>';
+                    str += '</div>';
+                    str += '<div class="money-txt">';
+                    str += '<div class="money-time nine-col">' + data.data[i].add_time + '</div>';
+                    str += '<p class="money-num">' + data.data[i].spend + '钻石</p>';
+                    str += '</div>';
+                    str += '</div>';
+                }
+                $("#recharge").html(str);
+                var new_page = parseInt(page) + 1;
+                $("#recharge_").attr('page', new_page);
+            } else {
+                $("#recharge_").html('加载完毕~');
+            }
+        }
+    })
+}
+
+function reward_ajax(){
+    var page = $("#reward_").attr('page');
+    if($("#reward_").html() == '加载完毕~'){
+        return;
+    }
+    $.ajax({
+        url: '{:url("user/reward_ajax")}',
+        type: 'post',
+        data: {page: page},
+        success: function(data){
+            if (data.error_code == 1) {
+                var str = $("#reward").html();
+                var data_length = data.data.length;
+                for (i = 0; i < data_length; i++) {
+                    str += '<div class="money-item flex-between shadow">';
+                    str += '<div class="money-name">';
+                    str += '<p class="money-wrap text-ellipsis">' + data.data[i].reward_name + '*1</p>';
+                    str += '</div>';
+                    str += '<div class="money-txt">';
+                    str += '<div class="money-time nine-col">' + data.data[i].reward_time + '</div>';
+                    str += '<p class="money-num">' + data.data[i].reward_spend + '钻石</p>';
+                    str += '</div>';
+                    str += '</div>';
+                }
+                $("#reward").html(str);
+                var new_page = parseInt(page) + 1;
+                $("#reward_").attr('page', new_page);
+            } else {
+                $("#reward_").html('加载完毕~');
+            }
+        }
+    })
+}
+
+$(function() {
+    recharge_ajax();
+    reward_ajax();
+})
+</script>

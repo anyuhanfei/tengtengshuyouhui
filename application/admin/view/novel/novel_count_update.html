@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+{include file="public:header"}
+
+<body class="no-skin">
+    <!--头部-->
+    {include file="public:nav"}
+
+    <div class="main-container ace-save-state" id="main-container">
+        <!--菜单-->
+        <script type="text/javascript">
+            try { ace.settings.loadState('main-container') } catch (e) { }
+        </script>
+
+        {include file="public:left"}
+
+        <div class="main-content">
+            <div class="main-content-inner">
+                <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                    <ul class="breadcrumb">
+                        <li>
+                            <i class="ace-icon fa fa-home home-icon"></i>
+                            <a href="{:url('Index/index')}">首页</a>
+                        </li>
+                        <li class="active">书籍管理</li>
+                        <li class="active">书籍列表</li>
+                        <li class="active">书籍统计信息</li>
+                    </ul><!-- /.breadcrumb -->
+
+                </div>
+
+                <div class="page-content">
+
+                    {include file="public:set"}
+
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="col-sm-10 col-sm-offset-1">
+                                <form id="logoForm" class="form-horizontal" action="{:url('novel/novel_count_update_save')}" method="post" enctype="multipart/form-data">
+                                    <input type="hidden" name="novel_id" value="{$novel.novel_id}">
+                                    <div class="row">
+                                        <div class="col-sm-7">
+                                            <div class="widget-box transparent">
+                                                <div class="widget-header widget-header-flat">
+                                                    <h4 class="widget-title"><i class="ace-icon fa fa-leaf green"></i>书籍统计信息</h4>
+                                                </div>
+                                                <div class="widget-body">
+                                                    <div class="widget-main">
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label no-padding-right" for="">书名:</label>
+                                                            <div class="col-sm-2">
+                                                                    <span>{$novel.novel_name}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label no-padding-right" for="">阅读量:</label>
+                                                            <div class="col-sm-3">
+                                                                <input class="input-control" type="text" name="reading_volume" id="reading_volume" value="{$novel.novel_count.reading_volume}" readonly="readonly">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-sm-2 control-label no-padding-right" for="">点赞量:</label>
+                                                                <div class="col-sm-3">
+                                                                        <input class="input-control" type="text" name="number_of_likes" id="number_of_likes" value="{$novel.novel_count.number_of_likes}" readonly="readonly">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-sm-2 control-label no-padding-right" for="">打赏量:</label>
+                                                            <div class="col-sm-3">
+                                                                    <input class="input-control" type="text" name="number_of_reward" id="number_of_reward" value="{$novel.novel_count.number_of_reward}" readonly="readonly">
+                                                                    
+                                                            </div>
+                                                            <label class="col-sm-2 control-label no-padding-right" for="">打赏人数:</label>
+                                                            <div class="col-sm-3">
+                                                                    <input class="input-control" type="text" name="number_of_reward_human" id="number_of_reward_human" value="{$novel.novel_count.number_of_reward_human}" readonly="readonly">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix form-actions">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button class="btn btn-info" type="submit" id="novel_update">
+                                                <i class="ace-icon fa fa-floppy-o bigger-110"></i>
+                                                修改
+                                            </button>
+                                            <a class="btn" id="novel_cancel" style="display: none;">
+                                                <i class="ace-icon fa fa-undo bigger-110"></i>
+                                                取消
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+                                <!-- PAGE CONTENT BEGINS -->
+                            </div>
+                            <!-- PAGE CONTENT ENDS -->
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.page-content -->
+            </div>
+        </div><!-- /.main-content -->
+
+        <div class="footer">
+            <div class="footer-inner">
+                <div class="footer-content">
+                    <span class="bigger-110">
+                        <span class="blue bolder">Ace</span>
+                        朵朵科技CMS &copy; 2018-2020
+                    </span>
+
+                    &nbsp; &nbsp;
+                    <a href="http://www.dd371.com" target="_blank">技术支持: 朵朵科技</a>
+
+                </div>
+            </div>
+        </div>
+
+        <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+            <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+        </a>
+    </div><!-- /.main-container -->
+
+
+    <script>
+
+        $(function(){
+            //修改信息
+            $("#novel_update").click(function(){
+                event.preventDefault();
+                $("#reading_volume").removeAttr('readonly');
+                $("#number_of_likes").removeAttr('readonly');
+                $("#number_of_reward").removeAttr('readonly');
+                $("#number_of_reward_human").removeAttr('readonly');
+                $("#novel_update").html('<i class="ace-icon fa fa-floppy-o bigger-110"></i>保存');
+                $("#novel_update").attr('id','novel_save');
+                $("#novel_cancel").attr('style', 'display:true;');
+                $("#novel_save").click(function(){
+                    $("#logoForm").submit();
+                })
+            })
+        })
+
+        $(function(){
+            //取消修改信息
+            $("#novel_cancel").click(function(){
+                event.preventDefault();
+                $("#reading_volume").attr('readonly','readonly');
+                $("#number_of_likes").attr('readonly','readonly');
+                $("#number_of_reward").attr('readonly','readonly');
+                $("#number_of_reward_human").attr('readonly','readonly');
+                $("#novel_save").html('<i class="ace-icon fa fa-floppy-o bigger-110"></i>修改');
+                $("#novel_save").attr('id','novel_update');
+                $("#novel_cancel").attr('style', 'display:none;')
+            })
+        })
+    
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+
+<body>
+    {include file="public/nav"}
+
+    <div class="top align-center">
+        <div class="top-txt">
+            排行榜
+        </div>
+        <a href="{:url('index/index')}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14"
+                height="14" /></a>
+        {include file="public/top_nav"}
+    </div>
+
+    <ul class="rank">
+        {volist name="top" id="t"}
+        <li class="rank-item">
+            <a href="{:url('index/novel_detail',array('novel_id'=>$t.novel_id))}" class="ablock">
+                <div class="new-special new-list">
+                    <div class="new-pic">
+                        <img src="{$t.novel_image}"
+                            width="92" height="122" />
+                    </div>
+                    <div class="new-info new-unit">
+                        <div class="new-top flex-between">
+                            <div class="new-unit text-ellipsis">{$t.novel_name}</div>
+                            <div class="new-score">{$t.novel_count.number_of_reward_human}人已打赏</div>
+                        </div>
+                        <p class="new-content">
+                            {$t.novel_profile}
+                        </p>
+                        <div class="new-cell new-mrt">
+                            <span class="new-kind">{$t.novel_classify.nc_name}</span>
+                            <span class="new-male">{$t.novel_status_text} |</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <p class="rank-num">{$i}</p>
+        </li>
+        {/volist}
+        <!-- <li class="rank-item">
+            <a href="detail.html" class="ablock">
+                <div class="new-special new-list">
+                    <div class="new-pic">
+                        <img src="http://book.img.ireader.com/idc_1/m_1,w_200,h_266/432e4faa/group6/M00/4D/36/CmRaIVj4i4eEbD_uAAAAAC_i3Gk047447480.jpg?v=WLYxKeAz&t=CmRaIVj_DcM."
+                            width="92" height="122" />
+                    </div>
+                    <div class="new-info new-unit">
+                        <div class="new-top flex-between">
+                            <div class="new-unit text-ellipsis">先婚后爱：总裁别太猛</div>
+                            <div class="new-score">167人已打赏</div>
+                        </div>
+                        <p class="new-content">
+                            她被压在墙上动弹不得，他魅笑靠近，“给醒宝生个弟弟吧。”她义正言辞，“总裁，请自重，我不接受潜规则！”“那你潜我好了。”“……”他是全城女人最想嫁的男人，竟只宠爱一个带着拖油瓶的女人！她若想要天上的星星，他绝不摘月亮。可是，他却在一次极致的缠绵后，将喜帖递上，“明天我结婚。”她微笑收下，“恭喜。”
+                        </p>
+                        <div class="new-cell new-mrt">
+                            <span class="new-kind">都市</span>
+                            <span class="new-male">连载中 |</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <p class="rank-num">6</p>
+        </li> -->
+    </ul>
+    <!--返回顶部-->
+    <div class="back-top" id="goToTop">
+        <a href="javascript:;"></a>
+    </div>
+</body>
+
+</html>

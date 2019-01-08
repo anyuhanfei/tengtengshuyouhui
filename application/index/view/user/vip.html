@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+<body>
+{include file="public/nav"}
+
+<div class="top align-center">
+  <div class="top-txt">
+    年费会员
+  </div>
+  <a href="{:url('user/center')}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14" height="14" /></a>
+
+      {include file="public/top_nav"}
+</div>
+
+<div class="charge">
+  <div class="center-cell flex-between bd-btm">
+    <div class="center-title">
+      当前余额：<span class="center-num">{$user.balance}</span>钻石
+    </div>
+  </div>
+  <div class="head-clas bd-btm">
+    <img src="/static/index/img/vip-card.png" />
+  </div>
+  <div class="p15 bd-btm">
+    <a href="__ROOT__/index/recharge/paysub?r_id=1000" class="charge-btn">
+      确认购买
+    </a>
+  </div>
+
+  <div class="head-clas">
+    <div class="charge-tip nine-col">
+      <p>由于包年会员为特殊虚拟商品，一旦成功购买即开始享受部分及全部服务，因此不可退换，请购买时注意</p>
+      <p>开通包年当天起365天内，为您的包年有效期</p>
+      <p>充值成为包年会员，可享受全部所有收费作品一站式阅读，不再额外扣费！相当于一天一元，即可阅读所有收费作品的VIP内容</p>
+      <p>充值遇到问题时请与客服联系。客服微信：{$sys.service_wx}，客服QQ：{$sys.qq}</p>
+    </div>
+  </div>
+</div>
+
+</body>
+
+</html>

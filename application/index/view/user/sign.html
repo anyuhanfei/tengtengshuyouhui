@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+<body>
+{include file="public/nav"}
+
+<div class="top align-center">
+  <div class="top-txt">
+    每日签到
+  </div>
+  <a href="{:url('user/center')}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14" height="14" /></a>
+
+      {include file="public/top_nav"}
+</div>
+
+<div class="sign align-center">
+  <div class="sign-dope">
+    每日签到可获赠<span class="center-num">{$min}-{$max}</span>钻石
+  </div>
+  <button class="charge-confirm sign-btn" id="signBtn">点击签到</button>
+  <p class="sign-show" id="signShow">今日已签到，明天再来吧！</p>
+</div>
+
+<div class="charge-tip nine-col head-clas">
+    {volist name="sign" id="s"}
+    <p>第{$s.day}天签到赠送{$s.reward}钻石</p>
+    {/volist}
+    <p>以此类推，最高赠送{$max}钻石</p>
+</div>
+
+<style type="text/css">
+.charge-sucess {
+  display: none;
+}
+</style>
+<div class="charge-sucess align-center" id="signBox">
+  <div class="sucess-icon">
+    <img src="/static/index/img/icon-gold.png" width="120" height="120" />
+  </div>
+  <p>签到成功！获得<span class="center-num" id="ts_num">30</span>钻石</p>
+  <button type="button" class="charge-confirm" id="signConfirm">确定</button>
+</div>
+<div class="common-bg" id="common_bg1"></div>
+
+<div id="today_sign" sign="{$today_sign}"></div>
+<script type="text/javascript">
+$(function() {
+  var signBtn = $('#signBtn'),
+    signShow = $('#signShow'),
+    commonBg = $('#common_bg1'),
+    signConfirm = $('#signConfirm'),
+    signBox = $('#signBox');
+
+  signBtn.click(function() {
+      $.ajax({
+          url: "{:url('user/sign_submit')}",
+          success: function(data){
+              if(data.error_code == 1){
+                $("#ts_num").html(data.data.reward);
+                var _this = $(this);
+                signBox.fadeIn();
+                commonBg.fadeIn();
+                signBtn.fadeOut();
+                setTimeout(function() {
+                _this.hide();
+                signShow.show();
+                }, 600)
+              }else{
+                  layer.msg(data.msg, {icon: 2})
+              }
+          }
+      })
+  });
+
+  signConfirm.click(function() {
+    signBox.fadeOut();
+    commonBg.fadeOut();
+  })
+
+  var today_sign = $("#today_sign").attr('sign');
+  if(today_sign == 1){
+    var _this = $(this);
+        signBtn.fadeOut();
+        setTimeout(function() {
+        _this.hide();
+        signShow.show();
+        }, 600)
+  }
+})
+</script>
+
+</body>
+
+</html>

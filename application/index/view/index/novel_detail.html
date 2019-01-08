@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+
+<body>
+    {include file="public/nav"}
+
+    <div class="top align-center">
+        <div class="top-txt">
+            本书介绍
+        </div>
+        <a href="{:url('index/index')}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14"
+                height="14" /></a>
+        {include file="public/top_nav"}
+    </div>
+
+    <div class="wrap">
+        <div class="wrap-top">
+            <div class="wrap-box">
+                <div class="wrap-img" style="background-image: url({$novel.novel_image});">
+                    <!--<img src="{$novel.novel_image}" width="113" height="151" />-->
+                </div>
+                <div class="wrap-main">
+                    <div class="wrap-title text-ellipsis">{$novel.novel_name}</div>
+                    <div class="wrap-kind text-ellipsis">
+                        {$novel.novel_status_text} | {$novel.novel_classify.nc_name}
+                    </div>
+                    <p class="wrap-num">{$novel.novel_word_number}万字</p>
+                    <div class="wrap-btn flex-around">
+                        <p class="wrap-button hasbang-btn" id="addBook" is_add="{$is_add_bookshelf}" novel_id="{$novel.novel_id}">
+                            {if condition="$is_add_bookshelf == 0"}添加书架{else /} 已添加书架{/if}
+                        </p>
+                        <a href="{:url('index/novel_content',['novel_id'=>$reading.novel_id,'chapter_id'=>$reading.chapter_id])}" class="wrap-button charge-btn">开始阅读</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="wrap-content bd-btm" id="bookContent">
+            <span>内容简介：{$novel.novel_profile}</span>
+            <div class="triangle_c" id="triangle_c"><span class="dec_triangle"></span></div>
+        </div>
+    </div>
+    <div class="zan flex-around bd-btm">
+        <div class="zan-box flex-center" id="zan">
+            <div class="zan-img">
+                <img src="/static/index/img/icon-zan.png" width="40" height="40" />
+            </div>
+            <p class="zan-txt">点赞(<span class="zan-num nine-col" id="zanNum">{$novel.novel_count.number_of_likes}</span>)</p>
+        </div>
+        <div class="zan-box flex-center" id="liwu">
+            <div class="zan-img">
+                <img src="/static/index/img/icon-liwu.png" width="40" height="40" />
+            </div>
+            <p class="zan-txt">打赏(<span class="zan-num nine-col" id="daNum">{$novel.novel_count.number_of_reward}</span>)</p>
+        </div>
+    </div>
+    <div class="menu bd-btm">
+        <div class="title">
+            <h3>目录<small class="nine-col">共{$novel.novel_count.number_of_chapters}章</small></h3>
+            <a href="{:url('index/novel_chapter',array('novel_id'=>$novel.novel_id))}" class="more">查看目录</a>
+        </div>
+        <div class="menu-list">
+            {volist name="chapter" id="c"}
+            <a href="{:url('index/novel_content',['novel_id'=>$novel.novel_id,'chapter_id'=>$c.chapter_id])}" class="menu-item text-ellipsis">
+                <span class="menu-free float-rt">
+                    {if condition="$c.spend == 0"}
+                    免费
+                    {else /}
+
+                    {/if}
+                </span>{$c.title}
+            </a>
+            {/volist}
+        </div>
+    </div>
+    <div class="shang">
+        <div class="title">
+            <h3>本书打赏</h3>
+        </div>
+        <div class="shang-box p15">
+            <ul class="shang-list">
+                {volist name="reward_log" id="l"}
+                <li class="shang-item clearfix">
+                    <div class="shang-img float-lt">
+                        <img src="{$l.user.user_image}" width="30" height="30" />
+                    </div>
+                    <div class="shang-icon float-rt">
+                        <img src="/static/index/img/icon-reward.png" width="50" height="50" />
+                    </div>
+                    <div class="shang-mid">
+                        <div class="shang-name text-ellipsis">
+                            {$l.user.user_name}
+                        </div>
+                        <p class="shang-time money-time nine-col">{$l.reward_time}</p>
+                        <div class="shang-cont flex">
+                            <span>赠送作者</span>
+                            <img src="{$l.set_reward.image}" width="30" height="30" />
+                        </div>
+                    </div>
+                </li>
+                {/volist}
+            </ul>
+            <div class="shang-btn align-center" id="more_reward_log" page="2" over='1'>
+                查看更多
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <div class="reward" id="reward">
+        <div class="title">
+            <h3>打赏</h3>
+        </div>
+        <ul class="reward-list align-center clearfix" id="rewardList">
+            {volist name="reward" id="r"}
+            <li class="reward-item {if condition='$i == 1'}active {/if}" {if condition='$i == 1' }id="reward_on" {/if}
+                reward_id="{$r.reward_id}">
+                <div class="reward-box">
+                    <div class="reward-img">
+                        <img src="{$r.image}" width="60" height="60" />
+                    </div>
+                    <p class="reward-name text-ellipsis">{$r.name}</p>
+                    <p class="reward-gold nine-col text-ellipsis">{$r.value}钻石</p>
+                </div>
+            </li>
+            {/volist}
+        </ul>
+        <div class="p15">
+            <a href="#" class="reward-btn charge-btn" id="rewardBtn">确认打赏</a>
+        </div>
+    </div>
+    <div class="common-bg" id="common_bg3"></div>
+    <script type="text/javascript">
+        $(function () {
+            //内容简介
+            $('#bookContent').click(function () {
+                var _this = $(this);
+                _this.toggleClass('active');
+                $('#triangle_c').toggleClass('active');
+            });
+
+            //打赏
+            var common_bg3 = $('#common_bg3'),
+                reward = $('#reward'),
+                rewardBtn = $('#rewardBtn'),
+                rewardList = $('#rewardList'),
+                liwu = $('#liwu');
+            liwu.click(function () {
+                common_bg3.addClass('show');
+                reward.addClass('show');
+            });
+            common_bg3.click(function () {
+                common_bg3.removeClass('show');
+                reward.removeClass('show');
+            });
+            //点击确认
+            rewardBtn.click(function () {
+                common_bg3.removeClass('show');
+                reward.removeClass('show');
+                var novel_id = {$novel.novel_id};
+                var reward_id = $('#reward_on').attr('reward_id');
+                $.ajax({
+                    'url': '{:url("index/give_reward")}',
+                    'type': 'post',
+                    'data': {
+                        novel_id: novel_id,
+                        reward_id: reward_id
+                    },
+                    'success': function (data) {
+                        layer.msg(data.msg);
+                        if (data.error_code == 1) {
+                            //增加打赏列表内容，增加打赏数量
+                            $("#daNum").html(data.data.number_of_reward);
+                            setTimeout(function(){history.go(0)},1000);
+                        }
+                        if(data.error_code == -2){
+                            //余额不足充值
+                            setTimeout(function(){window.location.href="{:url('user/charge')}";},700);
+                            
+                        }
+                    }
+                })
+            });
+            
+            //点击选择礼物
+            rewardList.on('click', '.reward-item', function () {
+                var _this = $(this);
+                _this.addClass('active').siblings().removeClass('active');
+                _this.attr('id', 'reward_on').siblings().attr('id', 'reward_off');
+            });
+
+            //  点赞
+            var zan = $('#zan')
+            zan.click(function () {
+                var zanNum = $('#zanNum').text();
+                var zanAdd = 0;
+                var id = {$novel.novel_id};
+                $.ajax({
+                    'url': '{:url("index/like")}',
+                    'type': 'post',
+                    'data': {
+                        novel_id: id
+                    },
+                    'success': function (data) {
+                        layer.msg(data.msg);
+                        if (data.error_code == 1) {
+                            zanAdd = parseInt(zanNum) + 1;
+                            $('#zanNum').text(zanAdd);
+                        }
+                    }
+                })
+            })
+
+            // 添加书架addBook
+            var addBook = $("#addBook");
+            addBook.click(function () {
+                var is_add = addBook.attr('is_add');
+                var novel_id = addBook.attr('novel_id');
+                if (is_add == 1) {
+                    return;
+                }
+                $.ajax({
+                    'url': '{:url("index/add_bookshelf")}',
+                    'type': 'post',
+                    'data': {
+                        novel_id: novel_id
+                    },
+                    'success': function (data) {
+                        layer.msg(data.msg);
+                        if (data.error_code == 1) {
+                            addBook.attr('is_add', 1);
+                            addBook.html('已添加书架');
+                        }
+                    }
+                })
+            })
+
+            var mrl = $("#more_reward_log");
+            mrl.click(function () {
+                if (mrl.attr('over') == 0) {
+                    return;
+                }
+                var page = mrl.attr('page');
+                var id = {$novel.novel_id};
+                $.ajax({
+                    'url': '{:url("index/reward_log")}',
+                    'type': 'post',
+                    'data': {
+                        page: page,
+                        novel_id: id,
+                        type: 0
+                    },
+                    'success': function (data) {
+                        console.log(data);
+                        var data_length = data.length;
+                        if (data_length == 0) {
+                            mrl.html('没有更多了~');
+                            mrl.attr('over', 0);
+                        }
+                        var str = $(".shang-list").html();
+                        for (var i = 0; i < data_length; i++) {
+                            str += '<li class="shang-item clearfix">';
+                            str += '<div class="shang-img float-lt">';
+                            str += '<img src="' + data[i].user_image +
+                                '" width="30" height="30" />';
+                            str += '</div>';
+                            str += '<div class="shang-icon float-rt">';
+                            str +=
+                                '<img src="/static/index/img/icon-reward.png" width="50" height="50" />';
+                            str += '</div>';
+                            str += '<div class="shang-mid">';
+                            str += '<div class="shang-name text-ellipsis">' + data[i].user_name +
+                                '</div>';
+                            str += '<p class="shang-time money-time nine-col">' + data[i].reward_time +
+                                '</p>';
+                            str += '<div class="shang-cont flex">';
+                            str += '<span>赠送作者</span>';
+                            str += '<img src="' + data[i].image +
+                                '" width="30" height="30" />';
+                            str += '</div>';
+                            str += '</div>';
+                            str += '</li>';
+                        }
+                        $(".shang-list").html(str);
+                        mrl.attr('page', page + 1);
+                    }
+                })
+            })
+
+        })
+        
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+{include file="public:header"}
+
+<body class="no-skin">
+  <!--头部-->
+  {include file="public:nav"}
+
+  <div class="main-container ace-save-state" id="main-container">
+    <!--菜单-->
+    <script type="text/javascript">
+      try { ace.settings.loadState('main-container') } catch (e) { }
+    </script>
+
+    {include file="public:left"}
+
+    <div class="main-content">
+      <div class="main-content-inner">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+          <ul class="breadcrumb">
+            <li>
+              <i class="ace-icon fa fa-home home-icon"></i>
+              <a href="{:url('Index/index')}">首页</a>
+            </li>
+            <li class="active">会员管理</li>
+            <li class="active">会员列表</li>
+          </ul><!-- /.breadcrumb -->
+
+        </div>
+
+        <div class="page-content">
+          {include file="public:set"}
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="col-sm-10 col-sm-offset-1">
+                <div class="page-header">
+                  <div class="row">
+                    <div class="col-sm-2">
+                      <!-- <a class="btn btn-success btn-white btn-bold" href="{:url('novel/novel_add')}">
+                        <i class="ace-icon fa fa-plus icon-only"></i>
+                        添加</a> -->
+                      <!-- <button class="btn btn-danger btn-white btn-bold del-btn">
+                  <i class="ace-icon fa fa-trash-o icon-only"></i>
+                  删除
+                </button> -->
+                    </div>
+
+                    <div class="col-sm-8 clearfix">
+                  
+                </div>
+                  </div>
+                </div>
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th class="center">
+                        <label class="pos-rel">
+                          <input type="checkbox" class="ace checkAll">
+                          <span class="lbl"></span>
+                        </label>
+                      </th>
+                      <th>ID</th>
+                      <th>昵称</th>
+                      <th>头像</th>
+                      <th class="hidden-480">钻石</th>
+                      <!-- <th class="hidden-480" style="width:25%;">简介</th> -->
+                      <th class="hidden-480">vip</th>
+                      <th class="hidden-480">注册时间</th>
+                      <th style="border-right:#ddd solid 1px;">操作</th>
+                    </tr>
+                  </thead>
+                  <form id="sortForm" action="__URL__/sort" method="post">
+                    <tbody>
+                      {volist name="list" id="v"}
+                      <tr class="ace-thumbnails">
+                        <td class="center"><label class="pos-rel">
+                            <input type="checkbox" class="ace check" value="{$v.user_id}">
+                            <span class="lbl"></span>
+                          </label>
+                        </td>
+                        <td><span class="badge badge-grey">{$v.user_id}</span></td>
+                        <td>{$v.user_name}</td>
+                        <td class="ace-thumbnails hidden-480">
+                          <li><a href="{$v.user_image}" data-rel="colorbox">
+                              <img width="80" height="80" alt="150x150" src="{$v.user_image}" />
+                              <div class="text">
+                                <div class="inner">点击放大</div>
+                              </div>
+                            </a></li>
+                        </td>
+                        <td class="hidden-480" id="balance{$v.user_id}">{$v.balance}</td>
+                        <td class="hidden-480" id="vip{$v.user_id}">{$v.vip_text}</td>
+                        <td class="hidden-480">{$v.add_time}</td>
+                        <td>
+                          <button class="btn btn-xs btn-info" onclick="recharge({$v.user_id})" title="充值">
+                            <i class="glyphicon glyphicon-usd"></i><!-- 充值 -->
+                          </button>
+                          {if condition="$v.vip == 0"}
+                          <button class="btn btn-xs btn-info" onclick="vip({$v.user_id})" title="设置为vip">
+                            <i class="glyphicon glyphicon-star"></i>
+                          </button>
+                          {elseif condition="$v.vip == 2"}
+                          <button class="btn btn-xs btn-danger" onclick="delvip({$v.user_id})" title="取消vip">
+                            <i class="glyphicon glyphicon-star"></i>
+                          </button>
+                          {/if}
+                          <a class="btn btn-xs btn-info" href="{:url('user/readed',array('id'=>$v.user_id))}" title="最近阅读">
+                            <i class="glyphicon glyphicon-book"></i>
+                          </a>
+                          <a class="btn btn-xs btn-info" href="{:url('user/bookshelf',array('id'=>$v.user_id))}" title="会员书架">
+                            <i class="glyphicon glyphicon-tasks"></i>
+                          </a>
+                          <a class="btn btn-xs btn-info" href="{:url('user/reward',array('id'=>$v.user_id))}" title="打赏列表">
+                            <i class="glyphicon glyphicon-heart-empty"></i>
+                          </a>
+                          <a class="btn btn-xs btn-info" href="{:url('user/sign',array('id'=>$v.user_id))}" title="签到记录">
+                            <i class="glyphicon glyphicon-edit"></i>
+                          </a>
+                          <a class="btn btn-xs btn-info" href="{:url('user/user_recharge_log',array('id'=>$v.user_id))}" title="充值记录">
+                            <i class="	glyphicon glyphicon-credit-card"></i>
+                          </a>
+                          <a class="btn btn-xs btn-info" href="{:url('user/user_login_log',array('id'=>$v.user_id))}" title="登录记录">
+                            <i class="glyphicon glyphicon-circle-arrow-up"></i>
+                          </a>
+                          <!-- <button class="btn btn-xs btn-danger" type="button" onclick="dels({$v.user_id})">
+                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                          </button> -->
+                        </td>
+                      </tr>
+                      {/volist}
+                      {empty name="list"}<tr>
+                        <td colspan="15" class="text-center">暂无数据</td>
+                      </tr>{/empty}
+                    </tbody>
+                  </form>
+                  <input type="file" id="other_img" name="other_img" style="display:none">
+                </table>
+                <div class="text-center">
+                  {$list->render()}
+                </div>
+              </div>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.page-content -->
+      </div>
+    </div><!-- /.main-content -->
+
+    <div class="footer">
+      <div class="footer-inner">
+        <div class="footer-content">
+          <span class="bigger-110">
+            <span class="blue bolder">Ace</span>
+            朵朵科技CMS &copy; 2018-2020
+          </span>
+
+          &nbsp; &nbsp;
+          <a href="http://www.dd371.com" target="_blank">技术支持: 朵朵科技</a>
+        </div>
+      </div>
+    </div>
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+      <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+  </div><!-- /.main-container -->
+
+  <div class="modal fade" id="recharge" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">充值</h4>
+            </div>
+            <div class="modal-body">
+              充值钻石：<input type="number" name="recharge" id="recharge_number" placeholder="请输入充值钻石数">
+              <input type="hidden" name="user_id" id="user_id">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal" onclick="recharge_submit()">提交</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+
+
+  <script>
+    jQuery(function ($) {
+      $('[data-rel=tooltip]').tooltip();
+
+      $("#hide-option").tooltip({
+        hide: {
+          effect: "explode",
+          delay: 250
+        }
+      });
+
+    })
+
+    function recharge(id){
+      event.preventDefault();
+      var recharge = $('#recharge');
+      $("#user_id").val(id);
+      $('#recharge').modal('show');
+    }
+
+    function vip(id){
+      event.preventDefault();
+      layer.confirm('您确定要将此会员设置为vip吗', { icon: 3 }, function (index) {
+        $.ajax({
+        'url': '{:url("user/get_vip")}',
+        'type': 'post',
+        'data': {id: id, type: 2},
+        'success':function(data){
+          if(data.error_code == 1){
+            layer.msg('设置vip成功');
+            $("#vip" + id).html('vip');
+            setTimeout(function(){history.go(0)},1000);
+          }else{
+            layer.msg(data.msg);
+          }
+        }
+      })
+      });
+    }
+
+    function delvip(id){
+      event.preventDefault();
+      layer.confirm('此会员是后台设置的vip，您确认收回vip权限吗', { icon: 3 }, function (index) {
+        $.ajax({
+        'url': '{:url("user/get_vip")}',
+        'type': 'post',
+        'data': {id: id, type: 0},
+        'success':function(data){
+          layer.msg(data.msg);
+          if(data.error_code == 1){
+            $("#vip" + id).html('普通会员');
+            setTimeout(function(){history.go(0)},1000);
+          }
+        }
+      })
+      });
+    }
+
+    function recharge_submit(){
+      event.preventDefault();
+      var recharge_number = $("#recharge_number").val();
+      if(recharge_number <= 0){
+        layer.msg('请输入正确充值钻石数！');
+        return;
+      }
+      var user_id = $("#user_id").val();
+      if(user_id == 0){
+        layer.msg('未选择会员!');
+        return;
+      }
+      $.ajax({
+        url: "{:url('user/recharge')}",
+        type: 'post',
+        data: {recharge_number: recharge_number, user_id: user_id},
+        success: function(data){
+          layer.msg(data.msg);
+          if(data.error_code == 1){
+            $("#balance" + user_id).html(data.data);
+          }
+        }
+      })
+    }
+  </script>
+</body>
+
+</html>

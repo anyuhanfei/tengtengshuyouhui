@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+
+<body>
+  {include file="public/nav"}
+
+
+  <div class="top align-center">
+    <div class="top-txt">
+      书库分类
+    </div>
+    <a href="{:url('index/index')}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14"
+        height="14" /></a>
+        {include file="public/top_nav"}
+  </div>
+
+  <div class="kind">
+    <ul class="kind-top bd-btm p15">
+      <li class="kind-item">
+        <div class="kind-title">
+          分类
+        </div>
+        <div class="kind-clas clearfix">
+          <a href="#" class="kind-cell active" type="nc_id" value="-1">全部</a>
+          {volist name="nc" id="c"}
+          <a href="#" class="kind-cell" type="nc_id" value="{$c.nc_id}">{$c.nc_name}</a>
+          {/volist}
+        </div>
+      </li>
+      <li class="kind-item">
+        <div class="kind-title">
+          性别
+        </div>
+        <div class="kind-clas clearfix">
+          <a href="#" class="kind-cell active" type="novel_sex" value="-1">全部</a>
+          <a href="#" class="kind-cell" type="novel_sex" value="0">男生</a>
+          <a href="#" class="kind-cell" type="novel_sex" value="1">女生</a>
+        </div>
+      </li>
+      <li class="kind-item">
+        <div class="kind-title">
+          状态
+        </div>
+        <div class="kind-clas clearfix">
+          <a href="#" class="kind-cell active" type="novel_status" value="-1">全部</a>
+          <a href="#" class="kind-cell" type="novel_status" value="1">连载中</a>
+          <a href="#" class="kind-cell" type="novel_status" value="2">已完结</a>
+        </div>
+      </li>
+      <li class="kind-item">
+        <div class="kind-title">
+          类型
+        </div>
+        <div class="kind-clas clearfix">
+          <a href="#" class="kind-cell active" type="free_of_charge" value="-1">全部</a>
+          <a href="#" class="kind-cell" type="free_of_charge" value="1">限时免费</a>
+          <a href="#" class="kind-cell" type="free_of_charge" value="0">收费</a>
+        </div>
+      </li>
+    </ul>
+    <ul class="rank" id="rank">
+      {volist name="novel" id="n"}
+      <li class="rank-item">
+        <a href="{:url('index/novel_detail',array('novel_id'=>$n.novel_id))}" class="ablock">
+          <div class="new-special new-list">
+            <div class="new-pic">
+              <img src="{$n.novel_image}"
+                width="92" height="122" />
+            </div>
+            <div class="new-info new-unit">
+              <div class="new-top flex-between">
+                <div class="new-unit text-ellipsis">{$n.novel_name}</div>
+                <div class="new-score">{$n.novel_count.number_of_reward_human}人已打赏</div>
+              </div>
+              <p class="new-content">
+                  {$n.novel_profile}
+              </p>
+              <div class="new-cell new-mrt">
+                <span class="new-kind">{$n.novel_classify.nc_name}</span>
+                <span class="new-male">{$n.novel_status_text} |</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+      {/volist}
+    </ul>
+    <!--下拉刷新-->
+    <div class="tab-bd">
+      <p id="more" next_page='2'>加载更多~</p>
+    </div>
+  </div>
+
+  <!--返回顶部-->
+  <div class="back-top" id="goToTop">
+    <a href="javascript:;"></a>
+  </div>
+
+</body>
+
+</html>
+
+<script>
+  $(function () {
+    //筛选条件更新
+    var kind_cell = $(".kind-cell");
+    kind_cell.click(function () {
+      var o = $(this);
+      var name = o.attr('type');
+      var o_value = o.attr('value');
+      $.ajax({
+        'url': '{:url("index/stack_api")}',
+        'type': 'post',
+        'data': {
+          name: name,
+          value: o_value,
+          type: 'search'
+        },
+        'success': function (data) {
+          more.attr('next_page', data.next_page);
+          var str = '';
+          var res = str_add(data.data, str);
+          $("#rank").html(res);
+          if(data.data.length == 0){
+            more.html('没有更多了~');
+          }else{
+            more.html('加载更多~');
+          }
+        }
+      })
+    })
+
+    //加载更多
+    var more = $("#more");
+    more.click(function () {
+      if(more.html() == '没有更多了~'){
+        return;
+      }
+      var page = more.attr('next_page');
+      $.ajax({
+        'url': '{:url("index/stack_api")}',
+        'type': 'post',
+        'data': {
+          page: page,
+          type: 'page'
+        },
+        'success': function (data) {
+          more.attr('next_page', data.next_page);
+          if(data.data.length == 0){
+            more.html('没有更多了~');
+            return;
+          }
+          var str = $("#rank").html();
+          var res = str_add(data.data, str);
+          $("#rank").html(res);
+        }
+      })
+    })
+  })
+
+  //字符串拼接
+  function str_add(data, str) {
+      var data_length = data.length;
+      for(var i=0;i<data_length;i++){
+        if(data[i].novel_status == 1){
+          var novel_status = '连载中';
+        }else{
+          var novel_status = '已完结';
+        }
+        str += '<li class="rank-item">';
+        str +=  '<a href="__URL__/index/novel_detail?novel_id='+ data[i].novel_id +'" class="ablock">';
+        str +=   '<div class="new-special new-list">';
+        str +=    '<div class="new-pic">';
+        str +=     '<img src="'+ data[i].novel_image +'" width="92" height="122" />';
+        str +=    '</div>';
+        str +=   '<div class="new-info new-unit">';
+        str +=   '<div class="new-top flex-between">';
+        str +=    '<div class="new-unit text-ellipsis">'+ data[i].novel_name +'</div>';
+        str +=     '<div class="new-score">'+ data[i].number_of_reward_human +'人已打赏</div>';
+        str +=    '</div>';
+        str +=    '<p class="new-content">';
+        str +=    data[i].novel_profile;
+        str +=    '</p>';
+        str +=   '<div class="new-cell new-mrt">';
+        str +=   '<span class="new-kind">'+ data[i].nc_name +'</span>';
+        str +=   '<span class="new-male">'+novel_status+' |</span>';
+        str +=  '</div>';
+        str +=  '</div>';
+        str +=  '</div>';
+        str +=  '</a>';
+        str +=  '</li>';
+      }
+      return str
+    }
+</script>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+
+<body>
+    {include file="public/nav"}
+
+    <div class="top align-center">
+        <div class="top-txt">
+            阅读记录
+        </div>
+        <a href="{:url('user/center')}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14"
+                height="14" /></a>
+                        {include file="public/top_nav"}
+            </div>
+        <div class="tab">
+            <div class="tab-hd">
+                <ul>
+                    {if condition="$type == 0"}
+                    <li class="active">我的书架</li>
+                    <li>最近阅读</li>
+                    {else /}
+                    <li>我的书架</li>
+                    <li class="active">最近阅读</li>
+                    {/if}
+                </ul>
+            </div>
+            <div class="tab-bd">
+                <ul>
+                    <li {if condition="$type == 0"} class="active" {/if}>
+                        <p class="tab-hide">暂无记录~</p>
+                        <div class="book-list clearfix" id="bookshelf_list">
+                            {volist name="bookshelf" id="b"}
+                            <div class="book-item">
+                                <a class="book-cell" href="{:url('index/novel_detail',array('novel_id'=>$b.novel.novel_id))}">
+                                    <div class="book-img">
+                                        <img src="{$b.novel.novel_image}"
+                                            width="92" height="122" />
+                                    </div>
+                                    <p class="book-txt text-ellipsis">{$b.novel.novel_name}</p>
+                                </a>
+                                <div class="book-dele" table_id="{$b.bookshelf_id}" table_type="bookshelf">
+                                    删除本书
+                                </div>
+                            </div>
+                            {/volist}
+                            <!-- <div class="book-item">
+                                <a class="book-cell" href="#">
+                                    <div class="book-img">
+                                        <img src="http://book.img.ireader.com/idc_1/m_1,w_200,h_266/432e4faa/group6/M00/4D/36/CmRaIVj4i4eEbD_uAAAAAC_i3Gk047447480.jpg?v=WLYxKeAz&t=CmRaIVj_DcM."
+                                            width="92" height="122" />
+                                    </div>
+                                    <p class="book-txt text-ellipsis">先婚后爱：总裁别太猛</p>
+                                </a>
+                                <div class="book-dele">
+                                    删除本书
+                                </div>
+                            </div> -->
+                        </div>
+                        <p id="bookshelf_" page="2">加载更多~</p>
+                    </li>
+                    <li {if condition="$type != 0"} class="active" {/if}>
+                        <p class="tab-hide">暂无记录~</p>
+                        <div class="book-list clearfix" id="read_list">
+                            {volist name="reading" id="r"}
+                            <div class="book-item">
+                                <a class="book-cell" href="{:url('index/novel_detail',array('novel_id'=>$r.novel.novel_id))}">
+                                    <div class="book-img">
+                                        <img src="{$r.novel.novel_image}"
+                                            width="92" height="122" />
+                                    </div>
+                                    <p class="book-txt text-ellipsis">{$r.novel.novel_name}</p>
+                                </a>
+                                <div class="book-dele" table_id="{$r.rr_id}" table_type="read">
+                                    删除本书
+                                </div>
+                            </div>
+                            {/volist}
+                        </div>
+                        <p id="read_" page="2">加载更多~</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+</body>
+
+</html>
+<script>
+    $(function(){
+        //删除
+        $(".book-dele").click(function () {
+            var o = $(this);
+            confirm("确认删除此条记录吗？") && o.parents(".book-item").remove();
+            var table_type = o.attr('table_type');
+            var table_id = o.attr('table_id');
+            $.ajax({
+                'url': "{:url('user/read_del')}",
+                'type': 'post',
+                'data': {table_type: table_type, table_id: table_id},
+                'success':function(data){
+
+                }
+            })
+        })
+
+        //加载最近阅读
+        var re = $("#read_");
+        re.click(function(){
+            var page = re.attr('page');
+            if(re.html() == '加载完毕~'){
+                return;
+            }
+            $.ajax({
+                'url': '{:url("user/read_ajax")}',
+                'type': 'post',
+                'data': {type: 'read', page: page},
+                'success': function(data){
+                    var str = $("#read_list").html();
+                    var data_length=data.data.length;
+                    if(data_length == 0){
+                        re.html('加载完毕~');
+                        return;
+                    }
+                    str = str_add(str, data, data_length);
+                    $("#read_list").html(str);
+                    re.attr('page',parseInt(page)+1);
+
+                }
+            })
+        })
+
+        //加载书架
+        var bs = $("#bookshelf_");
+        bs.click(function(){
+            var page = bs.attr('page');
+            if(bs.html() == '加载完毕~'){
+                return;
+            }
+            $.ajax({
+                'url': '{:url("user/read_ajax")}',
+                'type': 'post',
+                'data': {type: 'bookshelf', page: page},
+                'success': function(data){
+                    var str = $("#bookshelf_list").html();
+                    var data_length=data.data.length;
+                    if(data_length == 0){
+                        bs.html('加载完毕~');
+                        return;
+                    }
+                    str = str_add(str, data, data_length);
+                    $("#bookshelf_list").html(str);
+                    bs.attr('page',parseInt(page)+1);
+
+                }
+            })
+        })
+    })
+
+    //拼接字符串
+    function str_add(str, data, data_length){
+        for(var i=0;i<data_length;i++){
+            str += '<div class="book-item">';
+            str += '<a class="book-cell" href=__URL__/index/novel_detail/novel_id/"'+ data.data[i].novel_id +'">';
+            str += '<div class="book-img">';
+            str += '<img src="'+ data.data[i].novel_image +'" width="92" height="122" />';
+            str += '</div>';
+            str += '<p class="book-txt text-ellipsis">'+ data.data[i].novel_name +'</p>';
+            str += '</a>';
+            str += '<div class="book-dele" table_id="'+ data.data[i].bookshelf_id +'" table_type="bookshelf">';
+            str += '删除本书';
+            str += '</div>';
+            str += '</div>';
+        }
+        return str
+    }
+</script>

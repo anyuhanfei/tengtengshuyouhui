@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html>
+{include file="public:header"}
+
+<body class="no-skin">
+  <!--头部-->
+  {include file="public:nav"}
+
+  <div class="main-container ace-save-state" id="main-container">
+    <!--菜单-->
+    <script type="text/javascript">
+      try {
+        ace.settings.loadState('main-container')
+      } catch (e) {}
+    </script>
+
+    {include file="public:left"}
+
+    <div class="main-content">
+      <div class="main-content-inner">
+        <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+          <ul class="breadcrumb">
+            <li>
+              <i class="ace-icon fa fa-home home-icon"></i>
+              <a href="{:url('Index/index')}">首页</a>
+            </li>
+            <li class="active">书籍管理</li>
+            <li class="active">书籍列表</li>
+            <li class="active">章节目录</li>
+          </ul><!-- /.breadcrumb -->
+
+        </div>
+
+        <div class="page-content">
+          {include file="public:set"}
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="col-sm-10 col-sm-offset-1">
+                <div class="page-header">
+                  <div class="row">
+                    <div class="col-sm-6">
+                      <a class="btn btn-success btn-white btn-bold" href="{:url('novel/novel_chapter_add',array('id'=>$novel.novel_id))}">
+                      <i class="ace-icon fa fa-plus icon-only"></i>
+                      添加</a>
+                      <a class="btn btn-success btn-white btn-bold" onclick="file_uploads()">
+                      <i class="ace-icon fa fa-plus icon-only"></i>
+                      导入</a>
+                      <a class="btn btn-success btn-white btn-bold" onclick="update_spend()">
+                      <i class="ace-icon fa fa-plus icon-only"></i>
+                      批量修改所需钻石</a>
+                      <a class="btn btn-success btn-white btn-bold" onclick="update_delete()">
+                      <i class="ace-icon fa fa-plus icon-only"></i>
+                      批量删除</a>
+                      <a class="btn btn-success btn-white btn-bold" onclick="regular_test()">
+                      <i class="ace-icon fa fa-plus icon-only"></i>
+                      正则表达式测试</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="widget-header widget-header-flat">
+                    <h4 class="widget-title"><i class="glyphicon glyphicon-book"></i>{$novel.novel_name}</h4>
+                  </div>
+                <table class="table table-bordered table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>排序</th>
+                      <th>章节名</th>
+                      <th>所需钻石</th>
+                      <th style="border-right:#ddd solid 1px;">操作</th>
+                    </tr>
+                  </thead>
+                  <form id="sortForm" action="__URL__/sort" method="post">
+                    <tbody>
+                      {volist name="list" id="v"}
+                      <tr class="ace-thumbnails">
+                        <td><span class="badge badge-grey">{$v.chapter_id}</span></td>
+                        <td>
+                          <input type="number" name="sort" value="{$v.chapter_sort}" id="sort{$v.chapter_id}" onblur="chapter_sort({$v.chapter_id})">
+                        </td>
+                        <td>{$v.title}</td>
+                        <td class="hidden-480">
+                          <input type="number" name="spend" value="{$v.spend}" id="spend{$v.chapter_id}" onblur="chapter_spend({$v.chapter_id})">
+                        </td>
+                        <td>
+                          <button class="btn btn-xs btn-info" id="lookprofile{$v.chapter_id}" onclick="look_content({$v.chapter_id})">
+                            <span class="glyphicon glyphicon-file"></span><!-- 简介 -->
+                          </button>
+                          <a class="btn btn-xs btn-info" href="{:url('novel/novel_chapter_update',array('id'=>$v.chapter_id))}">
+                            <i class="ace-icon fa fa-pencil bigger-120"></i><!-- 修改 -->
+                          </a>
+                          <button class="btn btn-xs btn-danger" type="button" onclick="dels({$v.chapter_id})">
+                            <i class="ace-icon fa fa-trash-o bigger-120"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      {/volist}
+                      {empty name="list"}<tr>
+                        <td colspan="15" class="text-center">暂无数据</td>
+                      </tr>{/empty}
+                    </tbody>
+                  </form>
+                  <input type="file" id="other_img" name="other_img" style="display:none">
+                </table>
+                <div class="text-center">
+                  {$list->render()}
+                </div>
+              </div>
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+        </div><!-- /.page-content -->
+      </div>
+    </div><!-- /.main-content -->
+
+    <div class="footer">
+      <div class="footer-inner">
+        <div class="footer-content">
+          <span class="bigger-110">
+            <span class="blue bolder">Ace</span>
+            朵朵科技CMS &copy; 2018-2020
+          </span>
+
+          &nbsp; &nbsp;
+          <a href="http://www.dd371.com" target="_blank">技术支持: 朵朵科技</a>
+        </div>
+      </div>
+    </div>
+
+    <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+      <i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+    </a>
+  </div><!-- /.main-container -->
+
+  {volist name="list" id="l"}
+  <div class="modal fade" id="look_profile{$l.chapter_id}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel">{$l.title}</h4>
+        </div>
+        <div class="modal-body">{$l.content}</div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div>
+  {/volist}
+  
+  <div class="modal fade" id="file_txt" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form id="modal-form" action="{:url('novel/novel_import')}" method="post" enctype="multipart/form-data">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-titl" id="myModalLabel">请选择txt文件</h4>
+          </div>
+          <div class="modal-body">
+            如果章节名为'第x章'样式,起始标识符可以写为'第',结尾标识符可以写为'章';<br/>
+            如果章节名为'正文 第x章'样式,起始标识符可以写为'正文 第',结尾标识符可以写为'章';
+          </div>
+          <div class="modal-body">
+          小技巧：在某些句子中会出现章节标识符，这样系统会把这句话当作章节名，在一般的小说中'第X章'后都会有一个空格，
+            而在小说内容中几乎不会出现空格，那么结尾标识符可以写成'章 '，已增加导入准确率;
+          </div>
+          <div class="modal-body">
+            正则表达如果填写则章节表示符失效；txt解析时每行都有一个换行符，如果进行结尾匹配必须适应结尾的换行符,例子中使用[\s\S]匹配换行符<br/>
+            章节名为"001 xxxx",正则表达式为"#^(\d+)#i";<br/>
+            章节名为"xxxx"的四字汉字，正则表达式为"/^[\x{4e00}-\x{9fa5}]{4}[\s\S]$/u";<br/>
+            章节名为"第XXX章 XXX",正则表达式为"/第[\s\S]+章/";<br/>
+            </div>
+          <div class="modal-bod">
+            章节标识符（起始）：<input type="text" id="file_txt_file" name="start" placeholder="第"><br />
+            章节标识符（结尾）：<input type="text" id="file_txt_file" name="end" placeholder="章"><br />
+            正则表达式：<input type="text" id="file_txt_file" name="regular" placeholder=""><br />
+            书籍txt文件：<input type="file" id="file_txt_file" name="file"><br />
+            <input type="hidden" id="file_txt_id" name="novel_id" value="{$novel.novel_id}">
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button class="btn btn-primary">提交</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </form>
+  </div>
+
+  <div class="modal fade" id="update_spend" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <form id="modal-form1" action="{:url('novel/novel_chapter_update_spend')}" method="post" enctype="multipart/form-data">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-titl" id="myModalLabel">批量修改所需钻石</h4>
+            </div>
+            <div class="modal-body">
+              需要输入需要批量修改的起始章节排序序号和需要批量修改的结尾章节排序序号；如果要修改至结尾章节而又不知道结尾章节排序序号，则可用-1代替
+            </div>
+            <div class="modal-bod">
+              章节排序序号（起始）：<input type="number" id="file_txt_file" name="start"><br />
+              章节排序序号（结尾）：<input type="number" id="file_txt_file" name="end"><br />
+              所需花费钻石：<input type="number" id="file_txt_file" name="spend"><br />
+              <input type="hidden" id="file_txt_id" name="novel_id" value="{$novel.novel_id}">
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-default" data-dismiss="modal">关闭</button>
+              <button class="btn btn-primary">提交</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </form>
+    </div>
+
+    <div class="modal fade" id="update_delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <form id="modal-form2" action="{:url('novel/novel_chapter_update_delete')}" method="post" enctype="multipart/form-data">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-titl" id="myModalLabel">批量删除章节</h4>
+            </div>
+            <div class="modal-body">
+              需要输入需要批量删除的起始章节排序序号和需要批量删除的结尾章节排序序号；如果要删除至结尾章节而又不知道结尾章节排序序号，则可用-1代替
+            </div>
+            <div class="modal-bod">
+              章节排序序号（起始）：<input type="number" id="file_txt_file" name="start"><br />
+              章节排序序号（结尾）：<input type="number" id="file_txt_file" name="end"><br />
+              <input type="hidden" id="file_txt_id" name="novel_id" value="{$novel.novel_id}">
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-default" data-dismiss="modal">关闭</button>
+              <button class="btn btn-primary">提交</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </form>
+    </div>
+
+    <div class="modal fade" id="regular_test" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <form id="modal-form3" action="{:url('novel/regular_test')}" method="post" enctype="multipart/form-data">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-titl" id="myModalLabel">正则表达式测试</h4>
+            </div>
+            <div class="modal-body">
+              请输入正则表达式和即将上传的小说章节名；
+            </div>
+            <div class="modal-bod">
+              正则表达式：<input type="text" id="file_txt_file" name="regular"><br />
+              小说章节名：<input type="text" id="file_txt_file" name="title"><br />
+              <input type="hidden" id="file_txt_id" name="novel_id" value="{$novel.novel_id}">
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-default" data-dismiss="modal">关闭</button>
+              <button class="btn btn-primary">提交</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </form>
+    </div>
+
+
+  <script>
+    jQuery(function ($) {
+      $('[data-rel=tooltip]').tooltip();
+
+      $("#hide-option").tooltip({
+        hide: {
+          effect: "explode",
+          delay: 250
+        }
+      });
+
+    })
+
+    function look_content(id) {
+      event.preventDefault();
+      $('#look_profile' + id).modal('show');
+    }
+
+    function file_uploads() {
+      $('#file_txt').modal('show');
+    }
+
+    function update_spend(){
+      $('#update_spend').modal('show');
+    }
+
+    function update_delete(){
+      $('#update_delete').modal('show');
+    }
+    function regular_test(){
+      $('#regular_test').modal('show');
+    }
+
+    function save_file() {
+      var file = $('#file_txt_file').file; //获取选择的文件
+      var id = $('#file_txt_id').val();
+      var formData = new FormData(); //表单体
+      formData.append('upfile', file); //把要上传的文件添加到表单体中
+      formData.append('file_txt_id', id);
+      $.ajax({
+        'url': "{:url('novel/novel_import')}",
+        'data': formData,
+        'processData': false,
+        'contentType': false,
+        'success': function (result) {
+
+        }
+      });
+    }
+
+    //修改所需花费
+    function chapter_spend(id) {
+      var spend = $("#spend" + id).val();
+      $.ajax({
+        url: "{:url('novel/update_spend')}",
+        type: 'POST',
+        data: {
+          spend: spend,
+          id: id
+        },
+        success: function (res) {
+          layer.msg(res.msg);
+        }
+      })
+    }
+
+    
+
+    //修改排序
+    function chapter_sort(id) {
+      var sort = $("#sort" + id).val();
+      $.ajax({
+        url: "{:url('novel/update_sort')}",
+        type: 'POST',
+        data: {
+          sort: sort,
+          id: id
+        },
+        success: function (res) {
+          layer.msg(res.msg);
+        }
+      })
+    }
+
+    function dels(id) {
+      layer.confirm('你确定删除吗？', {
+        icon: 3
+      }, function (index) {
+        layer.close(index);
+        window.location.href = "__URL__/delete_chapter/id/" + id;
+      });
+    }
+
+    $(function(){
+	$('#modal-form').ajaxForm({
+		beforeSubmit: checkForm, // 此方法主要是提交前执行的方法，根据需要设置
+		success: complete, // 这是提交后的方法
+		dataType: 'json'
+	});
+
+  $('#modal-form1').ajaxForm({
+		beforeSubmit: checkForm, // 此方法主要是提交前执行的方法，根据需要设置
+		success: complete, // 这是提交后的方法
+		dataType: 'json'
+	});
+
+  $('#modal-form2').ajaxForm({
+		beforeSubmit: checkForm, // 此方法主要是提交前执行的方法，根据需要设置
+		success: complete, // 这是提交后的方法
+		dataType: 'json'
+	});
+  $('#modal-form3').ajaxForm({
+		beforeSubmit: checkForm, // 此方法主要是提交前执行的方法，根据需要设置
+		success: complete, // 这是提交后的方法
+		dataType: 'json'
+	});
+	
+	function checkForm(){
+	  
+		
+    }
+
+	function complete(data){
+		if(data.status==1){
+			layer.alert(data.msg, {icon: 5}, function(index){
+ 			layer.close(index);
+ 			window.location.href=data.url;
+			});
+			
+		}else{
+			layer.alert(data.msg, {icon: 6}, function(index){
+ 			layer.close(index);
+ 			window.location.href=data.url;
+			});
+			
+		}
+	}
+ 
+});
+
+</script>
+  </script>
+  
+</body>
+
+</html>

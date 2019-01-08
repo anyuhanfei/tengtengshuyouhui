@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+
+<body>
+    {include file="public/nav"}
+
+
+<div class="top align-center">
+  <div class="top-txt">
+    搜索
+  </div>
+  <a href="{:url('index/index')}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14" height="14" /></a>
+
+        {include file="public/top_nav"}
+</div>
+
+<div class="bd-btm">
+  <div class="head-flex">
+    <form id="form" method="get" class="flex-between">
+      <div class="head-ipt">
+        <img class="head-img" src="/static/index/img/icon-search.png" width="18" height="18" />
+        <input class="head-txt" id="search_value" type="text" name="search" {if condition="$search != ''"}value="{$search}"{/if} placeholder="请输入书名" />
+      </div>
+      <button class="head-center head-btn align-center" id="search_btn" type="submit">
+      搜索
+    </button>
+    </form>
+  </div>
+</div>
+
+<div class="hot bd-btm" id="history_wrap">
+  <div class="hot-top p15 flex-between">
+    <h5 class="hot-title">历史搜索：</h5>
+    <div class="hot-icon" id="search_dele">
+      <img src="/static/index/img/icon-dele.png" width="16" height="16" />
+    </div>
+  </div>
+  <ul class="hot-list clearfix p15" id="search_history">
+  </ul>
+</div>
+
+<div class="new">
+  <div class="title">
+    <h3 id="search_title">{if condition="$search != ''"} 搜索结果 {else \} 精彩推荐 {/if}</h3>
+  </div>
+  {volist name="res" id="r"}
+  <a href="{:url('index/novel_detail',array('novel_id'=>$r.novel_id))}" class="ablock">
+    <div class="new-special new-list">
+      <div class="new-pic">
+        <img src="{$r.novel_image}" width="92" height="122" />
+      </div>
+      <div class="new-info new-unit">
+        <div class="new-top flex-between">
+          <div class="new-unit text-ellipsis">{$r.novel_name}</div>
+          <div class="new-score">{$r.novel_count.number_of_reward_human}人已打赏</div>
+        </div>
+        <p class="new-content">
+          {$r.novel_profile}
+        </p>
+        <div class="new-cell new-mrt">
+          <span class="new-kind">{$r.novel_classify.nc_name}</span>
+          <span class="new-male">{$r.novel_status_text} |</span>
+        </div>
+      </div>
+    </div>
+  </a> 
+  {/volist}
+  <!-- <a href="detail.html" class="ablock">
+    <div class="new-special new-list">
+      <div class="new-pic">
+        <img src="http://book.img.ireader.com/idc_1/m_1,w_200,h_266/432e4faa/group6/M00/4D/36/CmRaIVj4i4eEbD_uAAAAAC_i3Gk047447480.jpg?v=WLYxKeAz&t=CmRaIVj_DcM." width="92" height="122" />
+      </div>
+      <div class="new-info new-unit">
+        <div class="new-top flex-between">
+          <div class="new-unit text-ellipsis">先婚后爱：总裁别太猛</div>
+          <div class="new-score">167人已打赏</div>
+        </div>
+        <p class="new-content">
+          她被压在墙上动弹不得，他魅笑靠近，“给醒宝生个弟弟吧。”她义正言辞，“总裁，请自重，我不接受潜规则！”“那你潜我好了。”“……”他是全城女人最想嫁的男人，竟只宠爱一个带着拖油瓶的女人！她若想要天上的星星，他绝不摘月亮。可是，他却在一次极致的缠绵后，将喜帖递上，“明天我结婚。”她微笑收下，“恭喜。”
+        </p>
+        <div class="new-cell new-mrt">
+          <span class="new-kind">都市</span>
+          <span class="new-male">连载中 |</span>
+        </div>
+      </div>
+    </div>
+  </a> -->
+  <!-- <a href="#" class="new-more">加载更多</a> -->
+</div>
+
+<!--返回顶部-->
+<div class="back-top" id="goToTop">
+  <a href="javascript:;"></a>
+</div>
+
+<script type="text/javascript">
+$(function() {
+  var search_dele = $('#search_dele'),
+    search_btn = $('#search_btn'),
+    search_value = $('#search_value'),
+    history_wrap = $('#history_wrap'),
+    search_history = $('#search_history'),
+    search_list = getStorge('search_list');
+
+  if(search_list.length != 0) {
+    search_history.html(showKeywords())
+  }
+  history_wrap.toggle(search_list.length != 0)
+
+  search_btn.click(function() {
+    var keyWord = search_value.val()
+    history_wrap.toggle(addStorge(keyWord) > 0)
+    search_history.html(showKeywords())
+  });
+
+  //清空
+  search_dele.click(function() {
+    if(confirm('是否清空历史记录？')) {
+      search_history.empty()
+      localStorage.clear()
+      history_wrap.hide()
+    }
+  })
+
+  search_history.on('click', '.hot-item', function() {
+    var _this = $(this)
+    search_value.val(_this.text())
+    $('#form').submit()
+  })
+
+})
+
+// 获取localStorge
+function getStorge(key) {
+  var res = localStorage.getItem(key)
+  return res === null ? [] : JSON.parse(res)
+}
+// 设置localStorge
+function setStorge(key, value) {
+  localStorage.setItem(key, JSON.stringify(value))
+}
+
+// 添加
+function addStorge(keyWord) {
+  var oldStorges = getStorge('search_list'),
+    index = oldStorges.indexOf(keyWord)
+
+  if(!keyWord) {
+    console.log('请输入关键词')
+    return false
+  }
+
+  if(index !== -1) {
+    keyWord = oldStorges[index]
+    oldStorges.splice(index, 1)
+  }
+  oldStorges.unshift(keyWord)
+  setStorge('search_list', oldStorges)
+  return oldStorges.length
+}
+
+function showKeywords() {
+  var keywords = '',
+    oldStorges = getStorge('search_list')
+  if(oldStorges.length > 0) {
+    for(var i = 0, len = oldStorges.length; i < len; i++) keywords += '<li class="hot-item">' + oldStorges[i] + '</li>'
+    return keywords
+  }
+}
+</script>
+
+</body>
+
+</html>

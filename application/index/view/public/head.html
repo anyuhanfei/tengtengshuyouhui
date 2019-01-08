@@ -1,0 +1,76 @@
+<head>
+    <meta charset="utf-8">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>书城</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    {load href="/static/index/css/animate.css"}
+    {load href="/static/index/css/toast.css"}
+    {load href="/static/index/css/iconfont.css"}
+    {load href="/static/index/css/bootstrap.min.css"}
+    {load href="/static/index/css/swiper.min.css"}
+    {load href="/static/index/css/style.min.css"}
+    {load href="/static/index/js/jquery.min.js"}
+    {load href="/static/index/js/bootstrap.min.js"}
+    {load href="/static/index/js/swiper.min.js"}
+    {load href="/static/index/js/toast.js"}
+    {load href="/static/index/js/main.js"}
+    {load href="/static/index/layer/layer.js"}
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+    <script type="text/javascript">
+        wx.config({
+            debug: false, //调试模式
+            appId: "{$signPackage['appId']}", // 
+            timestamp: "{$signPackage['timestamp']}", //生成签名的时间戳
+            nonceStr: "{$signPackage['nonceStr']}", //生成签名的随机串
+            signature: "{$signPackage['signature']}",
+
+            jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline'] // 所有要调用的 API 都要加到这个列表中
+        });
+        wx.ready(function () {
+            wx.onMenuShareAppMessage({ //分享给朋友
+                title: '{$share.share_title}', // 分享标题,可在控制器端传递
+                desc: '{$share.share_content}', //分享的描述，可在控制器端传递
+
+                link: '{$share.link}', // 分享链接，可在控制器端传递 
+                
+                imgUrl: '{$share.share_image}', // 分享图标 ，可在控制器端传递
+                success: function () {
+                    $.ajax({
+                        url: "{:url('user/ready_return')}",
+                        type: 'post',
+                        success: function (data) {
+                            layer.msg('分享成功');
+                        }
+                    })
+                    // 用户确认分享后执行的回调函数 
+                },
+                cancel: function () {
+                    // 用户取消分享后执行的回调函数 
+                }
+            });
+            wx.onMenuShareTimeline({ //分享到朋友圈
+                title: '{$share.share_title}',
+                desc: '{$share.share_content}',
+
+                link: '{$share.link}', // 分享链接 
+                imgUrl: '{$share.share_image}', // 分享图标 
+                success: function () {
+                    // 用户确认分享后执行的回调函数 
+                    $.ajax({
+                        url: "{:url('user/ready_return')}",
+                        type: 'post',
+                        success: function (data) {
+                            layer.msg('分享成功');
+                        }
+                    })
+                },
+                cancel: function () {
+                    // 用户取消分享后执行的回调函数 
+                }
+            });
+        });
+    </script>
+</head>

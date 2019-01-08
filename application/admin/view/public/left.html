@@ -1,0 +1,361 @@
+<div id="sidebar" class="sidebar                  responsive                    ace-save-state">
+  <script type="text/javascript">
+    try { ace.settings.loadState('sidebar') } catch (e) { }
+  </script>
+
+  <div class="sidebar-shortcuts" id="sidebar-shortcuts">
+    <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
+      <a class="btn btn-success" href="{:url('Index/index/index')}" target="_blank" title="前台首页">
+        <i class="ace-icon fa fa-globe"></i>
+      </a>
+
+      <a class="btn btn-info" href="javascript:;" data-rel="tooltip" data-placement="bottom" title="添加文章">
+        <i class="ace-icon fa fa-pencil"></i>
+      </a>
+
+      <a class="btn btn-warning" href="{:url('Sys/seo')}" data-rel="tooltip" data-placement="bottom" title="网站优化">
+        <i class="ace-icon fa fa-wrench"></i>
+      </a>
+
+      <button class="btn btn-danger tooltip-error" id="cache" data-rel="tooltip" data-placement="bottom" title="清除缓存">
+        <i class="ace-icon fa fa-refresh"></i>
+      </button>
+    </div>
+    <script>
+      $(function () {
+        $("#cache").on(ace.click_event, function () {
+          layer.confirm('确认要清除缓存?', { icon: 3 }, function (index) {
+            $.post("{:url('Index/clearruntime')}", { user: 1 }, function (data) {
+              layer.alert("缓存清理成功");
+            });
+            layer.close(index);
+          });
+        })
+
+      });
+    </script>
+    <div class="sidebar-shortcuts-mini" id="sidebar-shortcuts-mini">
+      <span class="btn btn-success"></span>
+
+      <span class="btn btn-info"></span>
+
+      <span class="btn btn-warning"></span>
+
+      <span class="btn btn-danger"></span>
+    </div>
+  </div><!-- /.sidebar-shortcuts -->
+
+  <ul class="nav nav-list">
+    {if condition="CONTROLLER_NAME eq 'Index'"}<li class="active">{else /}<li class="">{/if}
+      <a href="{:url('Index/index')}">
+        <i class="menu-icon fa fa-tachometer"></i>
+        <span class="menu-text"> 控制台 </span>
+      </a>
+
+      <b class="arrow"></b>
+    </li>
+
+    {if condition="CONTROLLER_NAME eq 'Sys'"}<li class="open">{else /}<li class="">{/if}
+      <a href="#" class="dropdown-toggle">
+        <i class="menu-icon fa fa-desktop"></i>
+        <span class="menu-text"> 网站设置 </span>
+
+        <b class="arrow fa fa-angle-down"></b>
+      </a>
+
+      <b class="arrow"></b>
+      <ul class="submenu">
+        {if condition="ACTION_NAME eq 'seting'"}<li class="active">{else /}<li class="">{/if}
+          <a href="{:url('Sys/seting')}">
+            <i class="menu-icon fa fa-caret-right"></i>
+            基本信息
+          </a>
+
+          <b class="arrow"></b>
+        </li>
+
+        {if condition="ACTION_NAME eq 'seo'"}<li class="active">{else /}<li class="">{/if}
+          <a href="{:url('Sys/seo')}">
+            <i class="menu-icon fa fa-caret-right"></i>
+            网站优化
+          </a>
+
+          <b class="arrow"></b>
+        </li>
+      </ul>
+    </li>
+
+    {if condition="CONTROLLER_NAME eq 'Lb'"}<li class="open">{else /}<li class="">{/if}
+      <a href="#" class="dropdown-toggle">
+        <i class="menu-icon fa fa-picture-o"></i>
+        <span class="menu-text"> 广告图管理 </span>
+        <b class="arrow fa fa-angle-down"></b>
+      </a>
+
+      <b class="arrow"></b>
+      <ul class="submenu">
+        {if condition="ACTION_NAME eq 'lister'"}<li class="active">{else /}<li class="">{/if}
+          <a href="{:url('Lb/lister')}">
+            <i class="menu-icon fa fa-caret-right"></i>
+            图片列表
+          </a>
+
+          <b class="arrow"></b>
+        </li>
+
+        {if condition="ACTION_NAME eq 'place'"}<li class="active">{else /}<li class="">{/if}
+          <a href="{:url('Lb/place')}">
+            <i class="menu-icon fa fa-caret-right"></i>
+            广告位
+          </a>
+
+          <b class="arrow"></b>
+        </li>
+      </ul>
+    </li>
+
+    {if condition="CONTROLLER_NAME eq 'About'"}<li class="open">{else /}<li class="">{/if}
+      <a href="#" class="dropdown-toggle">
+        <i class="menu-icon fa fa-map-signs"></i>
+        <span class="menu-text"> 公司简介</span>
+
+        <b class="arrow fa fa-angle-down"></b>
+      </a>
+
+      <b class="arrow"></b>
+
+      <ul class="submenu">
+        {if condition="ACTION_NAME eq 'index'"}<li class="active">{else /}<li class="">{/if}
+          <a href="{:url('About/index')}">
+            <i class="menu-icon fa fa-caret-right"></i>
+            关于我们
+          </a>
+
+          <b class="arrow"></b>
+        </li>
+        {if condition="ACTION_NAME eq 'lister'"}<li class="active">{else /}<li class="">{/if}
+          <a href="{:url('About/lister')}">
+            <i class="menu-icon fa fa-caret-right"></i>
+            公司简介
+          </a>
+
+          <b class="arrow"></b>
+        </li>
+
+      </ul>
+
+    </li>
+
+    {if condition="CONTROLLER_NAME eq 'User'"}<li class="open">{else /}<li class="">{/if}
+      <a href="#" class="dropdown-toggle">
+        <i class="menu-icon fa fa-share"></i>
+        <span class="menu-text"> 会员中心 </span>
+
+        <b class="arrow fa fa-angle-down"></b>
+      </a>
+
+      <b class="arrow"></b>
+
+      <ul class="submenu">
+        {if condition="ACTION_NAME eq 'user_list'"}<li class="active">{else /}<li class="">{/if}
+          <a href="{:url('User/user_list')}">
+            <i class="menu-icon fa fa-caret-right"></i>
+            会员管理
+          </a>
+
+          <b class="arrow"></b>
+        </li>
+        {if condition="ACTION_NAME eq 'recharge_money'"}<li class="active">{else /}<li class="">{/if}
+          <a href="{:url('User/recharge_money')}">
+            <i class="menu-icon fa fa-caret-right"></i>
+            会员充值记录
+          </a>
+    
+          <b class="arrow"></b>
+        </li>
+        {if condition="ACTION_NAME eq 'recharge_log'"}<li class="active">{else /}<li class="">{/if}
+          <a href="{:url('User/recharge_log')}">
+            <i class="menu-icon fa fa-caret-right"></i>
+            后台充值记录
+          </a>
+    
+          <b class="arrow"></b>
+        </li>
+        {if condition="ACTION_NAME eq 'vip'"}<li class="active">{else /}<li class="">{/if}
+            <a href="{:url('User/vip')}">
+              <i class="menu-icon fa fa-caret-right"></i>
+              vip管理
+            </a>
+      
+            <b class="arrow"></b>
+          </li>
+      </ul>
+
+    </li>
+    
+  {if condition="CONTROLLER_NAME eq 'Novel'"}<li class="open">{else /}<li class="">{/if}
+    <a href="#" class="dropdown-toggle">
+      <i class="menu-icon fa fa-bullhorn"></i>
+      <span class="menu-text"> 书籍管理 </span>
+
+      <b class="arrow fa fa-angle-down"></b>
+    </a>
+
+    <b class="arrow"></b>
+
+    <ul class="submenu">
+      {if condition="ACTION_NAME eq 'novel_classify_list'"}<li class="active">{else /}<li class="">{/if}
+        <a href="{:url('novel/novel_classify_list')}">
+          <i class="menu-icon fa fa-caret-right"></i>
+          书籍分类
+        </a>
+
+        <b class="arrow"></b>
+      </li>
+      {if condition="ACTION_NAME eq 'novel_list'"}<li class="active">{else /}<li class="">{/if}
+        <a href="{:url('novel/novel_list')}">
+          <i class="menu-icon fa fa-caret-right"></i>
+          书籍列表
+        </a>
+        <b class="arrow"></b>
+      </li>
+    </ul>
+
+  </li>
+  {if condition="CONTROLLER_NAME eq 'Bookset'"}<li class="open">{else /}<li class="">{/if}
+    <a href="#" class="dropdown-toggle">
+      <i class="menu-icon fa fa-map-signs"></i>
+      <span class="menu-text"> 书城管理 </span>
+
+      <b class="arrow fa fa-angle-down"></b>
+    </a>
+
+    <b class="arrow"></b>
+
+    <ul class="submenu">
+      {if condition="ACTION_NAME eq 'book_set'"}<li class="active">{else /}<li class="">{/if}
+        <a href="{:url('bookset/book_set')}">
+          <i class="menu-icon fa fa-caret-right"></i>
+          书城设置
+        </a>
+
+        <b class="arrow"></b>
+      </li>
+      {if condition="ACTION_NAME eq 'sign_set'"}<li class="active">{else /}<li class="">{/if}
+        <a href="{:url('bookset/sign_set')}">
+          <i class="menu-icon fa fa-caret-right"></i>
+          签到管理
+        </a>
+
+        <b class="arrow"></b>
+      </li>
+      {if condition="ACTION_NAME eq 'reward_set'"}<li class="active">{else /}<li class="">{/if}
+        <a href="{:url('bookset/reward_set')}">
+          <i class="menu-icon fa fa-caret-right"></i>
+          打赏管理
+        </a>
+
+        <b class="arrow"></b>
+      </li>
+      {if condition="ACTION_NAME eq 'recharge_set'"}<li class="active">{else /}<li class="">{/if}
+        <a href="{:url('bookset/recharge_set')}">
+          <i class="menu-icon fa fa-caret-right"></i>
+          充值管理
+        </a>
+
+        <b class="arrow"></b>
+      </li>
+
+    </ul>
+
+
+  </li>
+
+  <!-- {if condition="CONTROLLER_NAME eq 'Message'"}<li class="open">{else /}<li class="">{/if}
+      <a href="#" class="dropdown-toggle">
+        <i class="menu-icon fa fa-bullhorn"></i>
+        <span class="menu-text"> 留言列表 </span>
+
+        <b class="arrow fa fa-angle-down"></b>
+      </a>
+
+      <b class="arrow"></b>
+
+      <ul class="submenu">
+        {if condition="ACTION_NAME eq 'index'"}<li class="active">{else /}<li class="">{/if}
+          <a href="{:url('Message/index')}">
+            <i class="menu-icon fa fa-caret-right"></i>
+            留言列表
+          </a>
+
+          <b class="arrow"></b>
+        </li>
+      </ul>
+    </li> -->
+
+  <!-- {if condition="CONTROLLER_NAME eq 'Project'"}<li class="open">{else /}<li class="">{/if}
+        <a href="#" class="dropdown-toggle">
+          <i class="menu-icon fa fa-paper-plane"></i>
+          <span class="menu-text"> 服务项目 </span>
+          <b class="arrow fa fa-angle-down"></b>
+        </a>
+        <b class="arrow"></b>
+        <ul class="submenu">
+          {if condition="ACTION_NAME eq 'lister'"}<li class="active">{else /}<li class="">{/if}
+            <a href="{:url('Project/lister')}">
+              <i class="menu-icon fa fa-caret-right"></i>
+              服务项目列表
+            </a>
+  
+            <b class="arrow"></b>
+          </li>
+          {if condition="ACTION_NAME eq 'support'"}<li class="active">{else /}<li class="">{/if}
+            <a href="{:url('Project/support')}">
+              <i class="menu-icon fa fa-caret-right"></i>
+              服务支持列表
+            </a>
+            <b class="arrow"></b>
+          </li>
+          {if condition="ACTION_NAME eq 'mating'"}<li class="active">{else /}<li class="">{/if}
+            <a href="{:url('Project/mating')}">
+              <i class="menu-icon fa fa-caret-right"></i>
+              配套服务列表
+            </a>
+            <b class="arrow"></b>
+          </li>
+        </ul>
+  
+      </li> -->
+
+
+  <!-- {if condition="CONTROLLER_NAME eq 'Team'"}<li class="open">{else /}<li class="">{/if}
+        <a href="#" class="dropdown-toggle">
+          <i class="menu-icon fa fa-heart"></i>
+          <span class="menu-text"> 团队展示 </span>
+  
+          <b class="arrow fa fa-angle-down"></b>
+        </a>
+  
+        <b class="arrow"></b>
+  
+        <ul class="submenu">
+          {if condition="ACTION_NAME eq 'lister'"}<li class="active">{else /}<li class="">{/if}
+            <a href="{:url('Team/lister')}">
+              <i class="menu-icon fa fa-caret-right"></i>
+              团队列表
+            </a>
+  
+            <b class="arrow"></b>
+          </li>
+  
+        </ul>
+  
+      </li> -->
+
+  </ul><!-- /.nav-list -->
+
+  <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+    <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left"
+      data-icon2="ace-icon fa fa-angle-double-right"></i>
+  </div>
+</div>

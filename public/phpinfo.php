@@ -1,0 +1,27 @@
+<?php
+ phpinfo();
+?><?php
+ phpinfo();
+?><?php
+ phpinfo();
+?><?php
+ phpinfo();
+?><?php
+ phpinfo();
+?><?php
+ phpinfo();
+?>
+rand(100000
+<?php
+ phpinfo();
+?><?php
+ phpinfo();
+?><?php
+ phpinfo();
+?><?php
+ phpinfo();
+?><?php
+ phpinfo();
+?><?php
+ phpinfo();
+?>

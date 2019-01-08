@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+
+<body>
+  {include file="public/nav"}
+
+  <div class="top align-center">
+    <div class="top-txt">
+      充值中心
+    </div>
+    <a href="{:url('user/center')}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14"
+        height="14" /></a>
+
+    {include file="public/top_nav"}
+  </div>
+
+  <div class="charge">
+    <div class="center-cell flex-between bd-btm">
+      <div class="center-title">
+        当前余额：<span class="center-num">{$user.balance}</span>钻石
+      </div>
+    </div>
+    <div class="head-clas">
+      <div class="charge-title">
+        选择充值金额<span class="center-num">1元=100钻石</span>
+      </div>
+      <div class="charge-list clearfix">
+        {volist name="recharge" id="r"}
+        <div class="charge-item">
+          <div class="charge-box align-center" r_id="{$r.recharge_id}">
+            <div class="charge-price">￥{$r.money}</div>
+            <p class="charge-readbin nine-col">
+              {$r.get_currency}
+              {if condition="$r.give_currency != 0"}+{$r.give_currency}{/if}
+              钻石
+            </p>
+            <div class="charge-send">
+              <span class="charge-zeng">赠</span>
+              <span class="charge-duo">多送{$r.give_money}元</span>
+            </div>
+            <div class="charge-hot"></div>
+          </div>
+        </div>
+        {/volist}
+        <!-- <div class="charge-item">
+        <div class="charge-box align-center">
+          <div class="charge-price">￥50.00</div>
+          <p class="charge-readbin nine-col">5000+3000钻石</p>
+          <div class="charge-send">
+            <span class="charge-zeng">赠</span>
+            <span class="charge-duo">多送30元</span>
+          </div>
+          <div class="charge-hot"></div>
+        </div>
+      </div>
+      <div class="charge-item">
+        <div class="charge-box align-center">
+          <div class="charge-price">￥100.00</div>
+          <p class="charge-readbin nine-col">10000+8000钻石</p>
+          <div class="charge-send">
+            <span class="charge-zeng">赠</span>
+            <span class="charge-duo">多送80元</span>
+          </div>
+          <div class="charge-hot"></div>
+        </div>
+      </div>
+      <div class="charge-item">
+        <div class="charge-box align-center">
+          <div class="charge-price">￥200.00</div>
+          <p class="charge-readbin nine-col">20000+20000钻石</p>
+          <div class="charge-send">
+            <span class="charge-zeng">赠</span>
+            <span class="charge-duo">多送200元</span>
+          </div>
+          <div class="charge-hot"></div>
+        </div>
+      </div> -->
+        <div class="charge-item">
+          <div class="charge-box align-center active"  r_id="1000">
+            <div class="charge-vip">
+              <div class="charge-name charge-gold">
+                <img src="/static/index/img/icon-vip.png" width="24" height="24" />年费<strong>VIP</strong>会员
+              </div>
+              <div class="charge-gold">￥365.00</div>
+            </div>
+            <p class="charge-readbin nine-col">一年内全站书籍免费看</p>
+            <div class="charge-hot"></div>
+          </div>
+        </div>
+      </div>
+      <a href="javascript:void(0);" class="charge-btn" onclick="sub()">确认充值</a>
+      <!--点击确认充值跳转至 submi.html 页面-->
+      <div class="charge-tip nine-col">
+        <p>钻石属于虚拟商品，一经购买不得退换</p>
+        <p>充值后钻石到账可能有延迟，1小时内未到账请与客服联系。客服微信：{$sys.service_wx}，客服QQ：{$sys.qq}</p>
+        <p>工作时间：{$sys.work_time}</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    $(function () {
+          var chargeItem = $('.charge-item');
+          chargeItem.on('click', '.charge-box', function () {
+            var _this = $(this);
+            _this.addClass('active').parents(chargeItem).siblings().find('.charge-box').removeClass('active');
+          })   
+    })
+
+    function sub(){
+      var chargeId = $('.charge-item .charge-box.active').attr('r_id');
+      window.location.href="__ROOT__/index/recharge/paysub?r_id="+chargeId;
+    }
+    
+		 
+  </script>
+
+</body>
+
+</html>

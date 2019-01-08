@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+
+<body class="{if condition='$user_look_con.background == 2'}night{elseif condition='$user_look_con.background == 3'}eyes{else /}light{/if}">
+  {include file="public/nav"}
+
+<style type="text/css">
+    .head-clas {
+      position: fixed;
+    }
+    </style>
+
+<div class="top align-center read-top">
+  <div class="top-txt">
+    <div class="read-set" id="readSet" data-triggermy="readSetting" data-togglebtn="mytoggle"><i class="iconfont icon-set"></i></div>
+  </div>
+  <a href="{:url('index/novel_detail',['novel_id'=>$novel_id])}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14" height="14" /></a>
+</div>
+
+<div class="read">
+  <div class="read-cont normal" id="readCont">
+    <h3>{$chapter.title}</h3>
+    {$chapter.content}
+  </div>
+  <div class="read-menu clearfix">
+    <div class="read-prev float-lt" chapter_id="{$last_chapter_id}">
+      上一章
+    </div>
+    <div class="read-next float-rt" chapter_id="{$next_chapter_id}">
+      下一章
+    </div>
+    <div class="read-mid" id="readMenu" data-triggermy="btmMenu" data-togglebtn="mytoggle">
+      <img src="/static/index/img/icon_showmenu.png" width="24" height="24" />
+    </div>
+  </div>
+</div>
+
+<!--调整文本样式盒子-->
+<div class="read-setting" id="readSetting">
+  <h5 class="read-kind">字体大小</h5>
+  <div class="read-styl">
+    <span class="read-fonts read-small {if condition='$user_look_con.font_size == 1 || !$user_look_con'}active{/if}" font_size=1 data-js="small">小号</span>
+    <span class="read-fonts read-normal {if condition='$user_look_con.font_size == 2'}active{/if} " font_size=2 data-js="normal">标准</span>
+    <span class="read-fonts read-big {if condition='$user_look_con.font_size == 3'}active{/if}" font_size=3 data-js="large">大号</span>
+  </div>
+  <h5 class="read-kind">背景色</h5>
+  <div class="read-styl">
+    <span class="read-bg read-day {if condition='$user_look_con.background == 1 || !$user_look_con'}active{/if}" background_con=1 data-bgs="light">白天</span>
+    <span class="read-bg read-night {if condition='$user_look_con.background == 2'}active{/if}" background_con=2 data-bgs="night">夜间</span>
+    <span class="read-bg read-eyes {if condition='$user_look_con.background == 3'}active{/if}" background_con=3 data-bgs="eyes">护眼</span>
+  </div>
+</div>
+
+<!--底部导航-->
+<div class="btm-menu" id="btmMenu">
+  <div class="btm-list bd-btm">
+    <a href="javascript:(0)" class="btm-item" id="addBook" is_add="{$is_add_bookshelf}" novel_id="{$novel_id}">
+      <i class="iconfont icon-shujia"></i>
+      {if condition="$is_add_bookshelf == 0"}添加书架{else /} 已添加书架{/if}
+    </a>
+    <!-- <a href="javascript:(0)" class="btm-item"><i class="iconfont icon-goumai"></i>购买此书</a> -->
+    <a href="javascript:(0)" class="btm-item" id="shangBtm"><i class="iconfont icon-dashang"></i>我要打赏</a>
+    <a href="{:url('index/novel_chapter',['novel_id'=>$novel_id])}" class="btm-item"><i class="iconfont icon-mulu"></i>返回目录</a>
+    <a href="{:url('index/novel_detail',['novel_id'=>$novel_id])}" class="btm-item"><i class="iconfont icon-shuben"></i>返回作品</a>
+    <a href="{:url('index/index')}" class="btm-item"><i class="iconfont icon-home"></i>返回首页</a>
+  </div>
+  <p class="btm-item" id="calcelBtn">取消</p>
+</div>
+
+<div class="reward" id="reward">
+  <div class="title">
+  <h3>打赏</h3>
+</div>
+<ul class="reward-list align-center clearfix" id="rewardList">
+  {volist name="reward" id="r"}
+  <li class="reward-item {if condition='$i == 1'}active{/if}">
+    <div class="reward-box">
+      <div class="reward-img">
+        <img src="{$r.image}" width="60" height="60" />
+      </div>
+      <p class="reward-name text-ellipsis" reward_id="{$r.reward_id}">{$r.name}</p>
+      <p class="reward-gold nine-col text-ellipsis">{$r.value}钻石</p>
+    </div>
+  </li>
+  {/volist}
+</ul>
+<div class="p15">
+  <a href="javascript:(0)" class="reward-btn charge-btn" id="rewardBtn">确认打赏</a>
+</div>
+</div>
+
+<!-- 呼出提醒弹窗 -->
+<div class="tips_menu" data-js="tips_menu" id="tips_menu">
+  <div class="tips_menu_it">点击中间区域<br>呼出菜单</div>
+</div>
+
+<div id="novel_id" style="display: none;">{$novel_id}</div>
+<script type="text/javascript">
+$(function() {
+
+  //底部导航及打赏
+  var readMenu = $('#readMenu'),
+    common_bg = $('#common_bg'),
+    btmMenu = $('#btmMenu'),
+    shangBtm = $('#shangBtm'),
+    reward = $('#reward'),
+    rewardList = $('.reward-list'),
+    calcelBtn = $('#calcelBtn'),
+    rewardBtn = $("#rewardBtn"),
+    firstOpen = localStorage.getItem('showTipsMenu'),
+    tipsMenu = $('#tips_menu');
+    //底部导航显示按钮
+  readMenu.click(function() {
+    readSet.removeClass('active');
+  });
+  //底部导航取消按钮
+  calcelBtn.click(function() {
+    btmMenu.removeClass('show');
+    common_bg.removeClass('show');
+    $('body').removeClass('noscroll');
+  });
+  //我要打赏显示按钮
+  shangBtm.click(function() {
+    reward.addClass('show');
+  });
+  //打赏礼物
+  rewardBtn.click(function(){
+    var liwuName = $('.reward-item.active').find('.reward-name').text();
+    var reward_id = $('.reward-item.active').find('.reward-name').attr('reward_id');
+    var novel_id = $("#novel_id").html();
+    //打赏
+    $.ajax({
+      'url': '{:url("index/give_reward")}',
+      'type': 'post',
+      'data': {novel_id: novel_id, reward_id: reward_id},
+      'success': function(data){
+        // showToast('已打赏' + liwuName);
+        layer.msg(data.msg);
+        closeMb();
+        if(data.error_code == -2){
+            //余额不足充值
+            setTimeout(function(){window.location.href="{:url('user/charge')}";},700);
+        }
+      }
+    })
+    
+  })
+  //设置文本大小及背景色选项span
+  rewardList.on('click', '.reward-item', function() {
+    var _this = $(this);
+    _this.addClass('active').siblings().removeClass('active');
+  });
+
+  //顶部设置按钮
+  var readSet = $('#readSet');
+  readSet.click(function() {
+    var _this = $(this);
+    _this.toggleClass('active');
+  });
+
+  common_bg.click(function() {
+    readSet.removeClass('active');
+  })
+  
+  var readFont = $('.read-fonts'),
+    readCont = $('#readCont'),
+    readBgs = $('.read-bg');
+    //选择字体大小
+  readFont.click(function() {
+    var _this = $(this);
+    _this.addClass('active').siblings().removeClass('active');
+    var contSize = _this.attr('data-js');
+    readCont.attr('class', 'read-cont' + ' ' + contSize);
+    user_look_con(_this.attr('font_size'), 0); //修改数据库
+  });
+  //选择背景颜色
+  readBgs.click(function() {
+    var _this = $(this);
+    _this.addClass('active').siblings().removeClass('active');
+    var bdClas = _this.attr('data-bgs');
+    $('body').attr('class', bdClas);
+    user_look_con(0, _this.attr('background_con')); //修改数据库
+  });
+  //切换上下菜单显示及隐藏
+  readCont.click(function() {
+    var readMenu = $('.read-menu'),
+      readTop = $('.read-top'),
+      hasShow = !(readMenu.hasClass('out') && readTop.hasClass('out'));
+    readTop.toggleClass('out', hasShow);
+    readMenu.toggleClass('out', hasShow);
+  });
+  //添加到书架
+  var addBook = $('#addBook');
+  addBook.click(function() {
+    var is_add = addBook.attr('is_add');
+    var novel_id = addBook.attr('novel_id');
+    if(is_add == 1){
+        return;
+    }
+    $.ajax({
+        'url': '{:url("index/add_bookshelf")}',
+        'type': 'post',
+        'data': {novel_id: novel_id},
+        'success': function(data){
+            layer.msg(data.msg);
+            if(data.error_code == 1){
+              addBook.attr('is_add', 1);
+              addBook.html('<i class="iconfont icon-shujia"></i>已添加书架');
+            }
+        }
+    })
+  });
+
+  //修改数据库中会员习惯
+  function user_look_con(font_size, background){
+    $.ajax({
+      'url': '{:url("index/look_con")}',
+      'type': 'post',
+      'data': {font_size: font_size, background: background}
+    })
+  }
+
+  //上一章,下一章
+  var read_prev = $(".read-prev");
+  var read_next = $(".read-next");
+  read_prev.click(function(){
+    var chapter_id = read_prev.attr('chapter_id');
+    var novel_id = addBook.attr('novel_id');
+    if(chapter_id == ''){
+      layer.msg('已经是第一章了！');
+      return;
+    }
+    window.location.href = "__URL__/novel_content/novel_id/"+ novel_id +"/chapter_id/"+ chapter_id;
+  })
+  read_next.click(function(){
+    var chapter_id = read_next.attr('chapter_id');
+    var novel_id = addBook.attr('novel_id');
+    if(chapter_id == ''){
+      layer.msg('已经是最后一章了！');
+      return;
+    }
+    window.location.href = "__URL__/novel_content/novel_id/"+ novel_id +"/chapter_id/"+ chapter_id;
+  });
+  //第一次打开出现提示
+  if (firstOpen === null) {
+    tipsMenu.show();
+//  $('body').addClass('noscroll');
+  };
+  tipsMenu.click(function(){
+    $(this).hide();
+//  $('body').removeClass('noscroll');
+    localStorage.setItem('showTipsMenu',1)
+  });
+  //console.log(firstOpen)
+})
+</script>
+
+</body>
+
+</html>

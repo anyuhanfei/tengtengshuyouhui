@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+
+<body>
+  {include file="public/nav"}
+
+
+<div class="top align-center">
+  <div class="top-txt">
+    确认订单
+  </div>
+  <a href="{:url('user/center')}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14" height="14" /></a>
+  {include file="public/top_nav"}
+</div>
+
+<div class="submt">
+	<div class="submt-sum shadow">
+		支付金额：￥{$money}
+	</div>
+	<div class="p15">
+		<button type="button" class="charge-btn" onclick="callpay()">确认支付</button>
+	</div>
+	<!--支付成功后跳转至 sucess.html 页面-->
+</div>
+<!--返回顶部-->
+<div class="back-top" id="goToTop">
+  <a href="javascript:;"></a>
+</div>
+</body>
+
+</html>
+<script>
+function jsApiCall()
+	{
+		WeixinJSBridge.invoke(
+			'getBrandWCPayRequest',
+			{$data},
+			function(res){
+				if(res.err_msg == "get_brand_wcpay_request:ok"){ 
+					
+					//支付成功
+					$.ajax({
+						url: "{:url('recharge/ajax_notify')}",
+					})
+					window.location.href = "__URL__/sc";
+				}else if(res.err_msg == "get_brand_wcpay_request:cancel"){ 
+					layer.msg("取消支付!"); 
+					$.ajax({
+						url: "{:url('recharge/ajax_delete')}",
+					})
+					window.location.href = "{:url('user/center')}";
+				}else{ 
+					layer.msg("支付失败!"); 
+					$.ajax({
+						url: "{:url('recharge/ajax_delete')}",
+					})
+					window.location.href = "{:url('user/center')}";
+				} 
+				// 
+			}
+		);
+	}
+
+	function callpay()
+	{
+		if (typeof WeixinJSBridge == "undefined"){
+		    if( document.addEventListener ){
+		        document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);
+		    }else if (document.attachEvent){
+		        document.attachEvent('WeixinJSBridgeReady', jsApiCall); 
+		        document.attachEvent('onWeixinJSBridgeReady', jsApiCall);
+		    }
+		}else{
+		    jsApiCall();
+		}
+	}
+</script>

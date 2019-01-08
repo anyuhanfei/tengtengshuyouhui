@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+{load href="/static/index/js/dropload.min.js"}
+
+<body>
+  {include file="public/nav"}
+
+  <div class="top align-center">
+    <div class="top-txt">
+      书籍目录
+    </div>
+    <a href="{:url('index/novel_detail',['novel_id'=>$novel_count.novel_id])}" class="top-back flex-center"><img src="/static/index/img/icon_back.png"
+        width="14" height="14" /></a>
+      {include file="public/top_nav"}
+  </div>
+
+  <div class="menu">
+    <div class="menu-box bd-btm clearfix">
+      <div class="menu-select float-rt">
+        <select name="menu" class="menu-sel" id="menu">
+          {for start="1" end="$novel_count.number_of_chapters/50|ceil" step="1" comparison="elt"}
+          <option value="{$i}" {if condition="$page == $i" } selected="selected" {/if}>{$i*50-49}-{if condition="$i + $i*49 >
+            $novel_count.number_of_chapters"
+            }{$novel_count.number_of_chapters}{else /}{$i + $i*49}{/if}章 </option> {/for} </select> </div> <div class="menu-title">共{$novel_count.number_of_chapters}章</div>
+    </div>
+    <div class="menu-list" id="menuList">
+      <!-- <a href="readbook.html" class="menu-item text-ellipsis">
+        <span class="menu-free float-rt">免费</span> 第一章 少年苏凡
+      </a>
+      <a href="readbook.html" class="menu-item text-ellipsis">
+        <span class="menu-free float-rt">免费</span> 第二章 赌坊斗法
+      </a>
+      <a href="readbook.html" class="menu-item text-ellipsis">
+        <span class="menu-free float-rt">免费</span> 第三章 圆月寒芒
+      </a>
+      <a href="readbook.html" class="menu-item text-ellipsis">
+        第四章 圆月寒芒
+      </a>
+      <a href="readbook.html" class="menu-item text-ellipsis">
+        第五章 圆月寒芒
+      </a> -->
+    </div>
+  </div>
+  <div id="novel_id" style="display:none;">{$novel_count.novel_id}</div>
+  <div id="novel_page" style="display:none;">{$page}</div>
+  <div id="save_number" style="display:none;">true</div>
+</body>
+
+</html>
+<script>
+  $(function () {
+    // chapter($('#novel_page').html(), "common");
+
+    //select选中
+    var menu = $("#menu");
+    menu.change(function () {
+      var novel_id = $("#novel_id").html();
+      var page = menu.val() - 0;
+      window.location.href = "__URL__/novel_chapter/novel_id/" + novel_id + "/page/" + page;
+
+    });
+
+    var counter = 0,
+      // 每页展示4个
+      num = 50,
+      pageStart = 0,
+      pageEnd = 0;
+
+    // dropload
+    $('.menu-content').dropload({
+      scrollArea: window,
+      loadDownFn: function (me) {
+        var novel_id = $("#novel_id").html();
+        var page = $('#novel_page').html();
+        $.ajax({
+          type: 'GET',
+          url: '{:url("index/novel_chapter_page")}',
+          type: 'post',
+          data: {
+            page: page,
+            novel_id: novel_id
+          },
+          dataType: 'json',
+          success: function (data) {
+            var result = '';
+            counter++;
+            pageEnd = num * counter;
+            pageStart = pageEnd - num;
+            var r = 0;
+            for (var i = pageStart; i < pageEnd; i++) {
+              // result +=
+              //   '<a href="readbook.html" class="menu-item text-ellipsis"><span class="menu-free float-rt">' +
+              //   data[i].spend + '</span>' + data[i].title + '</a>';
+              var spend_text = '';
+              if (data[r].spend == 0) {
+                spend_text = '免费';
+              }
+              result += '<a href="__URL__/novel_content/novel_id/' + novel_id + '/chapter_id/' + data[r]
+                .chapter_id +
+                '" class="menu-item text-ellipsis">';
+              result += '<span class="menu-free float-rt">' + spend_text + '</span>' + data[r].title;
+              result += '</a>';
+              if ((i + 1) >= parseInt("{$novel_count.number_of_chapters}")) {
+                // 锁定
+                me.lock();
+                // 无数据
+                me.noData();
+                break;
+              }
+              r++
+            }
+            // 为了测试，延迟1秒加载
+            setTimeout(function () {
+              $('#menuList').append(result);
+              // 每次数据加载完，必须重置
+              me.resetload();
+            }, 600);
+            //页码+1
+            $("#novel_page").html(parseInt(page) + 1);
+          },
+          error: function (xhr, type) {
+            console.log('数据异常!');
+            // 即使加载出错，也得重置
+            me.resetload();
+          }
+        });
+      }
+    });
+
+  });
+</script>

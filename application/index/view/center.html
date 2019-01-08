@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+<style type="text/css">
+	.center-info {
+	  position: relative;
+	}
+	.center-vip {
+	  position: absolute;
+	  top: 12px;
+	  right: 20px;
+	  width: 80px;
+	  height: 80px;
+	  background: url('/static/index/img/icon-viper.png') no-repeat top center;
+	  background-size: 80px 80px;
+	}
+</style>
+<body>
+  {include file="public/nav"}
+
+  <div class="top align-center">
+    <div class="top-txt">
+      个人中心
+    </div>
+    <a href="{:url('index/index')}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14"
+        height="14" /></a>
+        {include file="public/top_nav"}
+  </div>
+
+  <div class="center">
+    <div class="center-info bd-btm flex">
+      <div class="center-img" style="background-image: url({$user.user_image});"></div>
+      <div class="center-txt">
+        <div class="center-name font16">{$user.user_name}</div>
+        <p class="center-id nine-col">ID:{$user.user_id}</p>
+      </div>
+      {if condition="$user.vip != 0"}
+        <!-- vip图标 -->
+        <div class="center-vip align-center"></div>
+      {/if}
+    </div>
+
+    <div class="center-cell flex-between bd-btm">
+      <div class="center-title">
+        <i class="iconfont icon-jinbi"></i>
+        <span class="center-num">{$user.balance}</span><span>钻石</span>
+      </div>
+      <a href="{:url('user/charge')}" class="center-charge">立即充值</a>
+    </div>
+
+    {if condition="$user.vip == 0"}
+    <a class="center-cell flex-between bd-btm" href="{:url('user/vip')}">
+      <div class="center-title">
+        <i class="iconfont icon-VIP"></i>
+        <span>开通年费VIP</span>
+      </div>
+      <div class="center-arrow">
+        <i class="iconfont icon-right"></i>
+      </div>
+    </a>
+    {/if}
+
+    <div class="bd-btm">
+      <a class="center-cell flex-between" href="{:url('user/buy')}">
+        <div class="center-title">
+          <i class="iconfont icon-xiaofeimingxi"></i>
+          <span>消费记录</span>
+        </div>
+        <div class="center-arrow">
+          <i class="iconfont icon-right"></i>
+        </div>
+      </a>
+      <a class="center-cell flex-between dec_line" href="{:url('user/recharge')}">
+        <div class="center-title">
+          <i class="iconfont icon-chongzhi"></i>
+          <span>充值记录</span>
+        </div>
+        <div class="center-arrow">
+          <i class="iconfont icon-right"></i>
+        </div>
+      </a>
+      <a class="center-cell flex-between dec_line" href="{:url('user/read')}">
+        <div class="center-title">
+          <i class="iconfont icon-yuedu"></i>
+          <span>阅读记录</span>
+        </div>
+        <div class="center-arrow">
+          <i class="iconfont icon-right"></i>
+        </div>
+      </a>
+      <a class="center-cell flex-between dec_line" href="{:url('user/sign')}">
+        <div class="center-title">
+          <i class="iconfont icon-qiandao"></i>
+          <span>每日签到</span>
+        </div>
+        <div class="center-arrow">
+          <i class="iconfont icon-right"></i>
+        </div>
+      </a>
+    </div>
+
+    <div class="bd-btm">
+      <a class="center-cell flex-between" href="{:url('user/phone')}">
+        <div class="center-title">
+          <i class="iconfont icon-bangdingshouji"></i>
+          {if condition="$user.user_phone == ''"}
+          <span>绑定手机号</span>
+          {else /}
+          <span>查看手机号</span>
+          {/if}
+        </div>
+        <div class="center-arrow">
+          {if condition="$user.user_phone == ''"}
+          <span>绑定即得</span><span class="center-num">{$set_book.phone_reward}钻石</span>
+          {/if}
+          <i class="iconfont icon-right"></i>
+        </div>
+      </a>
+      <a class="center-cell flex-between dec_line" href="{:url('user/service')}">
+        <div class="center-title">
+          <i class="iconfont icon-kefu"></i>
+          <span>客服中心</span>
+        </div>
+        <div class="center-arrow">
+          <i class="iconfont icon-right"></i>
+        </div>
+      </a>
+    </div>
+
+  </div>
+
+</body>
+
+</html>

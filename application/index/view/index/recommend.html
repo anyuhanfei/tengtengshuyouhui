@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+{include file="public/head"}
+
+<body>
+    {include file="public/nav"}
+
+
+    <div class="top align-center">
+        <div class="top-txt">
+            {$title}
+        </div>
+        <a href="{:url('index/index')}" class="top-back flex-center"><img src="/static/index/img/icon_back.png" width="14"
+                height="14" /></a>
+            {include file="public/top_nav"}
+    </div>
+
+    <div class="kind">
+        <ul class="rank">
+            {volist name="recommend" id="r"}
+            <li class="rank-item">
+                <a href="{:url('index/novel_detail',array('novel_id'=>$r.novel_id))}" class="ablock">
+                    <div class="new-special new-list">
+                        <div class="new-pic">
+                            <img src="{$r.novel_image}"
+                                width="92" height="122" />
+                        </div>
+                        <div class="new-info new-unit">
+                            <div class="new-top flex-between">
+                                <div class="new-unit text-ellipsis">{$r.novel_name}</div>
+                                <div class="new-score">{$r.novel_count.number_of_reward_human}人已打赏</div>
+                            </div>
+                            <p class="new-content">
+                                    {$r.novel_profile}
+                            </p>
+                            <div class="new-cell new-mrt">
+                                <span class="new-kind">{$r.novel_classify.nc_name}</span>
+                                <span class="new-male">{$r.novel_status_text} |</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {/volist}
+        </ul>
+        <!--下拉刷新-->
+    </div>
+    <!--返回顶部-->
+    <div class="back-top" id="goToTop">
+        <a href="javascript:;"></a>
+    </div>
+
+</body>
+
+</html>
